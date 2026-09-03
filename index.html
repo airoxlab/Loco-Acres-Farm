@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Loco Acres Farm in Millbury, Ohio — raw local honey, chicken, duck, turkey and goose eggs, pasture-raised beef and poultry, live birds, and holiday turkeys and geese by preorder. Open every day 10 am–5 pm.">
+<title>Loco Acres Farm</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
+<style>
+  :root {
+    --ground: #FBF4E4;
+    --ground-deep: #F3E7CC;
+    --hive: #4A3216;
+    --hive-deep: #33220E;
+    --amber: #C77B21;
+    --amber-bright: #E09A32;
+    --straw: #EBD9A8;
+    --meadow: #55703B;
+    --ink: #2B2213;
+    --ink-soft: #6E5F45;
+    --line: #DFCFA4;
+    --card: #FFFCF3;
+    --img-bg: #E8DBB8;
+    --on-dark: #F6EDD6;
+    --on-accent: #FFFCF3;
+    --ok: #55703B;
+    --pre: #C77B21;
+    --soon: #8A6FA8;
+    --display: "Young Serif", "Georgia", serif;
+    --body: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #1C1610;
+      --ground-deep: #141009;
+      --hive: #EBD9A8;
+      --hive-deep: #F6EDD6;
+      --amber: #E09A32;
+      --amber-bright: #C77B21;
+      --straw: #4A3B1E;
+      --meadow: #9BB77E;
+      --ink: #F1E8D2;
+      --ink-soft: #B3A788;
+      --line: #453824;
+      --card: #262019;
+      --img-bg: #2E2618;
+      --on-dark: #141009;
+      --on-accent: #141009;
+      --ok: #9BB77E;
+      --pre: #E09A32;
+      --soon: #B49DD1;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #1C1610;
+    --ground-deep: #141009;
+    --hive: #EBD9A8;
+    --hive-deep: #F6EDD6;
+    --amber: #E09A32;
+    --amber-bright: #C77B21;
+    --straw: #4A3B1E;
+    --meadow: #9BB77E;
+    --ink: #F1E8D2;
+    --ink-soft: #B3A788;
+    --line: #453824;
+    --card: #262019;
+    --img-bg: #2E2618;
+    --on-dark: #141009;
+    --on-accent: #141009;
+    --ok: #9BB77E;
+    --pre: #E09A32;
+    --soon: #B49DD1;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+  a { color: var(--amber); }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--amber);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  img, svg { max-width: 100%; display: block; }
+  img.ph { width: 100%; height: 100%; object-fit: cover; background: var(--img-bg); color: var(--ink-soft); }
+
+  .wrap { max-width: 70rem; margin: 0 auto; padding: 0 1.25rem; }
+  .eyebrow {
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 0.75rem;
+  }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; color: var(--hive); text-wrap: balance; margin: 0; }
+  h2 { font-size: clamp(1.65rem, 4.5vw, 2.35rem); line-height: 1.15; }
+  h3 { font-size: 1.18rem; }
+  p { margin: 0; }
+  section { padding: 4.25rem 0; }
+  .prose { max-width: 38em; }
+  .prose p + p { margin-top: 1rem; }
+  .section-intro { max-width: 44em; margin-top: 1rem; color: var(--ink-soft); }
+
+  /* ---------- Ticker ---------- */
+  .ticker {
+    background: var(--amber);
+    color: var(--on-accent);
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.55rem 1rem;
+    text-align: center;
+  }
+
+  /* ---------- Header ---------- */
+  .site-head {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--ground) 90%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  header.site {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 0;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 0.65rem;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: var(--hive);
+    text-decoration: none;
+  }
+  .brand svg { width: 36px; height: 36px; flex: none; }
+  nav.top { display: none; gap: 1.35rem; }
+  nav.top a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  nav.top a:hover { color: var(--amber); }
+  .call-btn {
+    display: inline-block;
+    background: var(--hive);
+    color: var(--ground);
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 0.92rem;
+    padding: 0.55rem 1.1rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .call-btn:hover { background: var(--amber); color: var(--on-accent); }
+  @media (min-width: 880px) { nav.top { display: flex; } }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 3rem 0 3.5rem; }
+  .hero-grid { display: grid; gap: 2rem; align-items: center; }
+  @media (min-width: 820px) { .hero-grid { grid-template-columns: 1.1fr 1fr; gap: 3rem; } }
+  .hero h1 { font-size: clamp(2.2rem, 6.5vw, 3.6rem); line-height: 1.08; }
+  .hero h1 em { font-style: normal; color: var(--amber); }
+  .hero .lede { margin-top: 1.1rem; font-size: 1.15rem; max-width: 34em; color: var(--ink-soft); }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.8rem; }
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 800;
+    padding: 0.8rem 1.5rem;
+    border-radius: 999px;
+    font-size: 1rem;
+  }
+  .btn-solid { background: var(--amber); color: var(--on-accent); }
+  .btn-solid:hover { background: var(--hive); color: var(--ground); }
+  .btn-ghost { border: 2px solid var(--hive); color: var(--hive); }
+  .btn-ghost:hover { border-color: var(--amber); color: var(--amber); }
+  .hero-note { margin-top: 1.4rem; font-size: 0.9rem; color: var(--ink-soft); }
+  .open-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--meadow);
+    margin-bottom: 1.1rem;
+  }
+  .open-badge::before {
+    content: "";
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .hero-photo, .figure {
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .hero-photo { aspect-ratio: 4 / 4.6; max-height: 560px; margin: 0; }
+  .figure { aspect-ratio: 4 / 3; margin: 0; }
+  .figure.tall { aspect-ratio: 3 / 3.5; }
+  .hero-photo figcaption, .figure figcaption {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 1.4rem 1.2rem 0.8rem;
+    background: linear-gradient(transparent, rgba(30, 20, 6, 0.78));
+    color: #F6EDD6;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* ---------- Stock board ---------- */
+  .board { background: var(--ground-deep); }
+  .board-grid { display: grid; gap: 1.1rem; margin-top: 2.2rem; }
+  @media (min-width: 700px) { .board-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .board-grid { grid-template-columns: repeat(4, 1fr); } }
+  .bcard {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    padding: 1.25rem 1.25rem 1.35rem;
+  }
+  .bcard .status {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.8rem;
+    color: var(--on-accent);
+  }
+  .status.ok { background: var(--ok); }
+  .status.pre { background: var(--pre); }
+  .status.soon { background: var(--soon); }
+  .bcard ul { margin: 0.5rem 0 0; padding-left: 1.1rem; color: var(--ink-soft); font-size: 0.95rem; }
+  .bcard li { margin-top: 0.25rem; }
+
+  /* ---------- Splits ---------- */
+  .split { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 820px) {
+    .split { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+    .split.flip > .figure, .split.flip > .duo { order: -1; }
+  }
+  .duo { display: grid; gap: 1rem; }
+  .duo .figure { aspect-ratio: 16 / 10; }
+  .callout {
+    margin-top: 1.6rem;
+    background: var(--ground-deep);
+    border-left: 4px solid var(--amber);
+    border-radius: 0 0.75rem 0.75rem 0;
+    padding: 1rem 1.2rem;
+    font-family: var(--display);
+    font-size: 1.1rem;
+    color: var(--hive);
+  }
+  .egg-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; }
+  .egg-chip {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.4rem 1rem;
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: var(--hive);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .egg-chip .dot { width: 12px; height: 15px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; display: inline-block; }
+
+  /* ---------- Holiday band ---------- */
+  .holiday { background: var(--hive-deep); }
+  .holiday .eyebrow { color: var(--amber-bright); }
+  .holiday h2, .holiday h3 { color: var(--on-dark); }
+  .holiday p { color: var(--on-dark); }
+  .holiday .prose p { opacity: 0.88; }
+  .holiday .figure { border-color: transparent; }
+  .holiday .timeline { margin-top: 1.6rem; display: grid; gap: 0.8rem; }
+  .holiday .tl {
+    display: flex; gap: 0.9rem; align-items: baseline;
+    background: color-mix(in srgb, var(--on-dark) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--on-dark) 18%, transparent);
+    border-radius: 0.8rem;
+    padding: 0.8rem 1.1rem;
+  }
+  .holiday .tl b {
+    font-family: var(--display);
+    font-weight: 400;
+    color: var(--amber-bright);
+    flex: none;
+    min-width: 5.5rem;
+  }
+  .holiday .tl span { color: var(--on-dark); opacity: 0.88; font-size: 0.97rem; }
+  .holiday .btn-solid { background: var(--amber-bright); color: #33220E; }
+  .holiday .btn-solid:hover { background: var(--on-dark); color: var(--hive-deep); }
+  :root[data-theme="dark"] .holiday { background: var(--ground-deep); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .holiday { background: var(--ground-deep); }
+  }
+
+  /* ---------- Payments ---------- */
+  .pay-row { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
+  .pay {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 0.7rem;
+    padding: 0.55rem 1.1rem;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--hive);
+  }
+
+  /* ---------- Hours ---------- */
+  .hours-section { background: var(--ground-deep); }
+  .hours-grid { display: grid; gap: 2.5rem; }
+  @media (min-width: 820px) { .hours-grid { grid-template-columns: 1fr 1.1fr; align-items: start; } }
+  table.hours {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours th, .hours td {
+    text-align: left;
+    padding: 0.68rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.98rem;
+  }
+  .hours tr:last-child th, .hours tr:last-child td { border-bottom: none; }
+  .hours th { font-weight: 800; color: var(--hive); width: 45%; }
+  .hours td { color: var(--ink); }
+  .hours-note { margin-top: 1rem; font-size: 0.9rem; color: var(--ink-soft); }
+
+  /* ---------- Visit ---------- */
+  .visit-cards { display: grid; gap: 1.25rem; margin-top: 2.5rem; }
+  @media (min-width: 700px) { .visit-cards { grid-template-columns: repeat(2, 1fr); } }
+  .vcard {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    padding: 1.5rem 1.4rem;
+  }
+  .vcard svg { width: 30px; height: 30px; margin-bottom: 0.8rem; }
+  .vcard p { margin-top: 0.45rem; color: var(--ink-soft); font-size: 0.98rem; }
+  .vcard a { font-weight: 800; text-decoration: none; overflow-wrap: anywhere; }
+  .vcard a:hover { text-decoration: underline; }
+
+  /* ---------- Footer ---------- */
+  footer.site {
+    background: var(--ground-deep);
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    padding: 2.5rem 0;
+    text-align: center;
+    font-size: 0.92rem;
+  }
+  footer.site .fbrand { font-family: var(--display); font-size: 1.3rem; color: var(--hive); margin-bottom: 0.4rem; }
+  footer.site p { margin-top: 0.3rem; }
+  footer.site a { color: inherit; }
+</style>
+</head>
+<body>
+
+<div class="ticker">Chicken, duck, turkey &amp; goose eggs — available now at the farm</div>
+
+<div class="site-head">
+  <div class="wrap">
+    <header class="site">
+      <a class="brand" href="#top" aria-label="Loco Acres Farm home">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M20 3 L36 20 H32 V36 H8 V20 H4 Z" fill="#C77B21"/>
+          <path d="M20 3 L36 20 H32 L20 8 L8 20 H4 Z" fill="#4A3216"/>
+          <ellipse cx="20" cy="26" rx="7" ry="8.5" fill="#FFFCF3"/>
+          <ellipse cx="20" cy="28" rx="4.5" ry="5.5" fill="#EBD9A8"/>
+        </svg>
+        Loco Acres Farm
+      </a>
+      <nav class="top" aria-label="Sections">
+        <a href="#stock">In stock</a>
+        <a href="#honey">Honey</a>
+        <a href="#eggs">Eggs</a>
+        <a href="#meat">Meat</a>
+        <a href="#live">Live birds</a>
+        <a href="#holiday">Holiday orders</a>
+        <a href="#hours">Hours</a>
+        <a href="#visit">Visit</a>
+      </nav>
+      <a class="call-btn" href="tel:+14199171706">Call the farm</a>
+    </header>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="open-badge">Open every day &middot; 10 am – 5 pm</span>
+        <h1>Raw honey, <em>rainbow eggs</em>, and pasture-raised birds.</h1>
+        <p class="lede">Loco Acres Farm is your roadside stop on Woodville Road in Millbury, Ohio — fresh unfiltered honey, four kinds of eggs, beef and poultry raised right here, and live birds for your own flock.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-solid" href="#stock">See what's in stock</a>
+          <a class="btn btn-ghost" href="#holiday">Order a holiday bird</a>
+        </div>
+        <p class="hero-note">1760 Woodville Rd, Millbury, OH 43447 &middot; <a href="tel:+14199171706">419-917-1706</a></p>
+      </div>
+      <figure class="hero-photo">
+        <img class="ph" src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=1200&q=75" alt="A flock of red hens in a farmyard, one looking straight at the camera" loading="eager">
+        <figcaption>The ladies who keep the egg baskets full.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= STOCK BOARD ================= -->
+  <section id="stock" class="board">
+    <div class="wrap">
+      <p class="eyebrow">The farm stand board</p>
+      <h2>What's available right now</h2>
+      <p class="section-intro">Stock changes with the seasons and the flock — call ahead if you're driving far for something specific.</p>
+      <div class="board-grid">
+        <div class="bcard">
+          <span class="status ok">Available now</span>
+          <h3>Honey &amp; eggs</h3>
+          <ul>
+            <li>Raw, unfiltered local honey</li>
+            <li>Chicken eggs</li>
+            <li>Duck eggs</li>
+            <li>Turkey eggs</li>
+            <li>Goose eggs</li>
+          </ul>
+        </div>
+        <div class="bcard">
+          <span class="status ok">In stock</span>
+          <h3>Meat</h3>
+          <ul>
+            <li>Beef</li>
+            <li>Chicken</li>
+          </ul>
+        </div>
+        <div class="bcard">
+          <span class="status pre">By preorder</span>
+          <h3>Specialty poultry</h3>
+          <ul>
+            <li>Duck</li>
+            <li>Goose</li>
+            <li>Turkey</li>
+            <li>Guinea fowl</li>
+          </ul>
+        </div>
+        <div class="bcard">
+          <span class="status soon">Live &amp; coming soon</span>
+          <h3>For your homestead</h3>
+          <ul>
+            <li>Live chickens &amp; turkeys</li>
+            <li>Live ducks &amp; geese</li>
+            <li>Other poultry</li>
+            <li>Rabbits — coming soon!</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HONEY ================= -->
+  <section id="honey">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">From our hives</p>
+        <h2>Raw, unfiltered, truly local honey.</h2>
+        <div class="prose" style="margin-top:1.2rem">
+          <p>Our honey goes from the hive to the jar and nowhere in between — never heated, never filtered, so it keeps all the pollen, enzymes, and flavor of the fields the bees actually worked.</p>
+          <p>Local honey means local blooms. Every jar tastes like this corner of Wood County, and no two seasons are quite the same.</p>
+        </div>
+        <div class="callout">Jarred at the farm from our own hives — while the harvest lasts.</div>
+      </div>
+      <div class="duo">
+        <figure class="figure">
+          <img class="ph" src="https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=900&q=75" alt="Golden honey dripping from a wooden dipper into a glass jar" loading="lazy">
+          <figcaption>Nothing added, nothing taken out.</figcaption>
+        </figure>
+        <figure class="figure">
+          <img class="ph" src="https://images.unsplash.com/photo-1473973266408-ed4e27abdd47?auto=format&fit=crop&w=900&q=75" alt="A beekeeper in a white suit working an open hive box in a green apiary" loading="lazy">
+          <figcaption>Working the hives.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EGGS ================= -->
+  <section id="eggs" style="padding-top:0">
+    <div class="wrap split flip">
+      <figure class="figure tall">
+        <img class="ph" src="https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?auto=format&fit=crop&w=1000&q=75" alt="A carton of eggs in naturally different colors — white, brown, cream, and pale green" loading="lazy">
+        <figcaption>Every carton is a little different — that's the point.</figcaption>
+      </figure>
+      <div>
+        <p class="eyebrow">Fresh daily</p>
+        <h2>Four kinds of eggs, one farm stand.</h2>
+        <div class="prose" style="margin-top:1.2rem">
+          <p>Most stands stop at chicken eggs. Ours is where bakers come for rich duck eggs, and the curious come to try a turkey egg or crack a single goose egg into the pan for breakfast.</p>
+          <p><strong>All four are available now</strong> — gathered from birds that spend their days scratching, foraging, and dabbling around the farm.</p>
+        </div>
+        <div class="egg-row">
+          <span class="egg-chip"><span class="dot" style="background:#B5793D"></span>Chicken</span>
+          <span class="egg-chip"><span class="dot" style="background:#DCE7DA"></span>Duck</span>
+          <span class="egg-chip"><span class="dot" style="background:#E8D9BC"></span>Turkey</span>
+          <span class="egg-chip"><span class="dot" style="background:#F4F1E6; border:1px solid #C9BD9C"></span>Goose</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MEAT ================= -->
+  <section id="meat" class="board">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Pasture to freezer</p>
+        <h2>Beef and chicken in stock. Waterfowl by preorder.</h2>
+        <div class="prose" style="margin-top:1.2rem">
+          <p>Beef and chicken are available and in stock — raised here, not trucked in. Duck, goose, turkey, and guinea fowl are raised in smaller numbers, so we sell those by preorder to make sure every bird finds its table.</p>
+          <p>Tell us what you're planning and we'll set it aside. A quick call is all it takes to reserve.</p>
+        </div>
+        <div class="hero-ctas">
+          <a class="btn btn-solid" href="tel:+14199171706">Call to reserve</a>
+        </div>
+      </div>
+      <figure class="figure tall">
+        <img class="ph" src="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?auto=format&fit=crop&w=1000&q=75" alt="Beef cattle standing in deep green pasture with wooded hills behind" loading="lazy">
+        <figcaption>Raised on grass, finished with care.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= LIVE BIRDS ================= -->
+  <section id="live">
+    <div class="wrap split flip">
+      <figure class="figure tall">
+        <img class="ph" src="flock.webp" alt="Young chickens of many breeds and colors on fresh straw inside the Loco Acres brooder barn" loading="lazy">
+        <figcaption>Our actual young flock on fresh straw — photo from the farm.</figcaption>
+      </figure>
+      <div>
+        <p class="eyebrow">Start your own flock</p>
+        <h2>Live poultry, straight from our barn.</h2>
+        <div class="prose" style="margin-top:1.2rem">
+          <p>We sell live chickens, turkeys, ducks, geese, and other poultry — healthy birds raised on straw and fresh air, in more breeds and colors than you'll find at a feed store. Whether you want three laying hens for the backyard or a breeding trio of geese, come pick your birds in person.</p>
+          <p><strong>Rabbits are coming soon</strong> — ask when you visit and we'll put you on the list.</p>
+        </div>
+        <div class="callout">Not sure what breed fits your setup? Ask — we keep most of them ourselves.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOLIDAY ================= -->
+  <section id="holiday" class="holiday">
+    <div class="wrap split">
+      <div>
+        <p class="eyebrow">Thanksgiving &amp; Christmas</p>
+        <h2>Holiday birds sell out weeks in advance. Order early.</h2>
+        <div class="prose" style="margin-top:1.2rem">
+          <p>Every year, our holiday turkeys, geese, ducks, and guinea fowl are spoken for long before the holidays arrive. We start accepting Thanksgiving and Christmas orders <strong>as early as July</strong> — and we always sell out.</p>
+        </div>
+        <div class="timeline">
+          <div class="tl"><b>July</b><span>Holiday order book opens — best selection of birds and sizes.</span></div>
+          <div class="tl"><b>Fall</b><span>Orders fill fast; we typically sell out weeks before the holidays.</span></div>
+          <div class="tl"><b>Pickup</b><span>Collect your fresh bird at the farm, ready for the table.</span></div>
+        </div>
+        <div class="hero-ctas">
+          <a class="btn btn-solid" href="tel:+14199171706">Place a holiday order</a>
+        </div>
+      </div>
+      <figure class="figure tall">
+        <img class="ph" src="https://images.unsplash.com/photo-1606728035253-49e8a23146de?auto=format&fit=crop&w=1000&q=75" alt="A golden roasted turkey on a serving platter" loading="lazy">
+        <figcaption>Worth planning ahead for.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= PAYMENTS ================= -->
+  <section id="pay" style="padding-bottom:2.5rem">
+    <div class="wrap">
+      <p class="eyebrow">Easy checkout</p>
+      <h2>Pay however suits you.</h2>
+      <p class="section-intro">We accept all major credit cards, plus the apps you already use.</p>
+      <div class="pay-row">
+        <span class="pay">💳 Credit cards</span>
+        <span class="pay">PayPal</span>
+        <span class="pay">Venmo</span>
+        <span class="pay">Zelle</span>
+        <span class="pay">CashApp</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HOURS ================= -->
+  <section id="hours" class="hours-section">
+    <div class="wrap hours-grid">
+      <div>
+        <p class="eyebrow">Farm hours</p>
+        <h2>Open seven days a week.</h2>
+        <p class="prose" style="margin-top:1.2rem">We're here 10 am to 5 pm every day of the week — including most holidays. Hours might differ on holidays, so call ahead if you're making a special trip.</p>
+        <p class="hours-note">Open Labor Day (Monday) 10 am – 5 pm — holiday hours may differ.</p>
+      </div>
+      <div>
+        <table class="hours">
+          <caption class="eyebrow" style="text-align:left; caption-side:top; padding-bottom:0.6rem">Weekly schedule</caption>
+          <tbody>
+            <tr><th scope="row">Monday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Tuesday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Wednesday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Thursday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Friday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Saturday</th><td>10 am – 5 pm</td></tr>
+            <tr><th scope="row">Sunday</th><td>10 am – 5 pm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VISIT ================= -->
+  <section id="visit">
+    <div class="wrap">
+      <p class="eyebrow">Come on out</p>
+      <h2>Find us on Woodville Road.</h2>
+      <div class="visit-cards">
+        <div class="vcard">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M16 3 C10 3 5.5 7.5 5.5 13.3 C5.5 21 16 29.5 16 29.5 S26.5 21 26.5 13.3 C26.5 7.5 22 3 16 3 Z" fill="#C77B21"/>
+            <circle cx="16" cy="13" r="4.5" fill="#FFFCF3"/>
+          </svg>
+          <h3>The farm stand</h3>
+          <p>1760 Woodville Rd<br>Millbury, Ohio 43447<br>United States</p>
+          <p><a href="https://maps.google.com/?q=1760+Woodville+Rd,+Millbury,+OH+43447" rel="noopener">Get directions</a></p>
+        </div>
+        <div class="vcard">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M7 4 h6 l2.5 6.5 -3.5 3 c1.6 3.6 4 6 7.5 7.5 l3 -3.5 L29 20 v6 c0 1.4 -1.1 2.5 -2.5 2.5 C13.5 28 4 18.5 4.5 6.5 4.5 5.1 5.6 4 7 4 Z" fill="#C77B21"/>
+          </svg>
+          <h3>Call or text</h3>
+          <p>Check stock, reserve a bird, or place a holiday order.</p>
+          <p><a href="tel:+14199171706">+1 419-917-1706</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="fbrand">Loco Acres Farm</div>
+    <p>Raw honey &middot; Farm eggs &middot; Pasture-raised meat &middot; Live poultry</p>
+    <p>1760 Woodville Rd, Millbury, OH 43447 &middot; <a href="tel:+14199171706">419-917-1706</a></p>
+    <p style="margin-top:0.9rem; font-size:0.82rem;">Flock photo taken at Loco Acres. Additional photos via Unsplash.</p>
+  </div>
+</footer>
+
+</body>
+</html>
