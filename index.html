@@ -150,6 +150,15 @@
     text-decoration: none;
   }
   .brand svg { width: 36px; height: 36px; flex: none; }
+  .brand-logo { height: 46px; width: auto; display: block; }
+  @media (max-width: 480px) { .brand-logo { height: 38px; } }
+  :root[data-theme="dark"] .brand-logo,
+  footer.site .flogo { background: #FBF4E4; border-radius: 0.6rem; }
+  :root[data-theme="dark"] .brand-logo { padding: 0.3rem 0.55rem; height: 52px; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .brand-logo { background: #FBF4E4; border-radius: 0.6rem; padding: 0.3rem 0.55rem; height: 52px; }
+  }
+  footer.site .flogo { display: block; margin: 0 auto 0.9rem; height: 64px; width: auto; padding: 0.45rem 0.8rem; }
   nav.top { display: none; gap: 1.35rem; }
   nav.top a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
   nav.top a:hover { color: var(--amber); }
@@ -389,13 +398,7 @@
   <div class="wrap">
     <header class="site">
       <a class="brand" href="#top" aria-label="Loco Acres Farm home">
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path d="M20 3 L36 20 H32 V36 H8 V20 H4 Z" fill="#C77B21"/>
-          <path d="M20 3 L36 20 H32 L20 8 L8 20 H4 Z" fill="#4A3216"/>
-          <ellipse cx="20" cy="26" rx="7" ry="8.5" fill="#FFFCF3"/>
-          <ellipse cx="20" cy="28" rx="4.5" ry="5.5" fill="#EBD9A8"/>
-        </svg>
-        Loco Acres Farm
+        <img class="brand-logo" src="logo-web.png" alt="Loco Acres Farm">
       </a>
       <nav class="top" aria-label="Sections">
         <a href="#stock">In stock</a>
@@ -672,6 +675,7 @@
 
 <footer class="site">
   <div class="wrap">
+    <img class="flogo" src="logo-web.png" alt="Loco Acres Farm logo">
     <div class="fbrand">Loco Acres Farm</div>
     <p>Raw honey &middot; Farm eggs &middot; Pasture-raised meat &middot; Live poultry</p>
     <p>Joe &amp; Margie Kill &middot; 1760 Woodville Rd, Millbury, OH 43447</p>
