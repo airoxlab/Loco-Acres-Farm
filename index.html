@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Loco Acres Farm in Millbury, Ohio — raw local honey, chicken, duck, turkey and goose eggs, pasture-raised beef and poultry, live birds, and holiday turkeys and geese by preorder. Open every day 10 am–5 pm.">
+<meta name="description" content="Loco Acres Farm in Millbury, Ohio — raw local honey, chicken, duck, turkey and goose eggs, pasture-raised beef and poultry, live birds, and duck and goose by preorder. Open every day 10 am–5 pm.">
 <title>Loco Acres Farm</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Nunito+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
 <style>
@@ -262,6 +262,13 @@
   .status.soon { background: var(--soon); }
   .bcard ul { margin: 0.5rem 0 0; padding-left: 1.1rem; color: var(--ink-soft); font-size: 0.95rem; }
   .bcard li { margin-top: 0.25rem; }
+  .seasonal {
+    display: inline-block; margin-left: 0.3rem; font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--amber);
+    background: var(--straw); border-radius: 999px; padding: 0.08rem 0.5rem;
+    vertical-align: 1px; white-space: nowrap;
+  }
+  .bnote { margin-top: 0.8rem; font-size: 0.85rem; color: var(--ink-soft); font-style: italic; }
 
   /* ---------- Splits ---------- */
   .split { display: grid; gap: 2.5rem; align-items: center; }
@@ -281,20 +288,6 @@
     font-size: 1.1rem;
     color: var(--hive);
   }
-  .egg-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; }
-  .egg-chip {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.4rem 1rem;
-    font-weight: 800;
-    font-size: 0.9rem;
-    color: var(--hive);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .egg-chip .dot { width: 12px; height: 15px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; display: inline-block; }
 
   /* ---------- Holiday band ---------- */
   .holiday { background: var(--hive-deep); }
@@ -336,7 +329,20 @@
     font-weight: 800;
     font-size: 0.95rem;
     color: var(--hive);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1;
   }
+  .pay img { flex: none; display: block; height: 22px; width: auto; }
+  .pay .cards { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .pay .cards img { height: 26px; }
+  /* PayPal, Venmo and Zelle marks already contain the brand name, so no text label */
+  .pay.mark { padding: 0.5rem 1.05rem; }
+  .pay.mark img { height: 20px; }
+  /* Zelle's mark is a boxed lockup with its own padding, so it needs a little
+     extra height to sit at the same optical weight as the wordmarks beside it */
+  .pay.mark img[alt="Zelle"] { height: 27px; }
 
   /* ---------- Hours ---------- */
   .hours-section { background: var(--ground-deep); }
@@ -423,7 +429,7 @@
       <div>
         <span class="open-badge">Open every day &middot; 10 am – 5 pm</span>
         <h1>Raw honey, <em>rainbow eggs</em>, and pasture-raised birds.</h1>
-        <p class="lede">Loco Acres Farm is your roadside stop on Woodville Road in Millbury, Ohio — fresh unfiltered honey, four kinds of eggs, beef and poultry raised right here, and live birds for your own flock.</p>
+        <p class="lede">Loco Acres Farm is your roadside stop on Woodville Road in Millbury, Ohio — fresh raw, unfiltered honey, farm fresh eggs, beef and poultry raised locally, and live birds for your own flock.</p>
         <div class="hero-ctas">
           <a class="btn btn-solid" href="#stock">See what's in stock</a>
           <a class="btn btn-ghost" href="#holiday">Order a holiday bird</a>
@@ -450,10 +456,11 @@
           <ul>
             <li>Raw, unfiltered local honey</li>
             <li>Chicken eggs</li>
-            <li>Duck eggs</li>
-            <li>Turkey eggs</li>
-            <li>Goose eggs</li>
+            <li>Duck eggs <span class="seasonal">spring&ndash;mid&nbsp;summer</span></li>
+            <li>Turkey eggs <span class="seasonal">spring&ndash;mid&nbsp;summer</span></li>
+            <li>Goose eggs <span class="seasonal">spring&ndash;mid&nbsp;summer</span></li>
           </ul>
+          <p class="bnote">Duck, turkey and goose eggs are primarily available spring through mid&nbsp;summer.</p>
         </div>
         <div class="bcard">
           <span class="status ok">In stock</span>
@@ -462,27 +469,24 @@
             <li>Beef</li>
             <li>Turkey</li>
             <li>Chicken</li>
-            <li>Rabbit</li>
           </ul>
         </div>
         <div class="bcard">
           <span class="status pre">By preorder</span>
-          <h3>Specialty poultry</h3>
+          <h3>Waterfowl</h3>
           <ul>
             <li>Duck</li>
             <li>Goose</li>
-            <li>Guinea fowl</li>
-            <li>Holiday turkeys &amp; geese</li>
           </ul>
         </div>
         <div class="bcard">
           <span class="status soon">Live animals</span>
           <h3>For your homestead</h3>
           <ul>
-            <li>Live chickens</li>
-            <li>Live turkeys</li>
-            <li>Live ducks &amp; geese</li>
-            <li>Other poultry</li>
+            <li>Chickens</li>
+            <li>Turkeys</li>
+            <li>Ducks</li>
+            <li>Geese</li>
           </ul>
         </div>
       </div>
@@ -499,7 +503,7 @@
           <p>Our honey goes from the hive to the jar and nowhere in between — never heated, never filtered, so it keeps all the pollen, enzymes, and flavor of the fields the bees actually worked.</p>
           <p>Local honey means local blooms. Every jar tastes like this corner of Wood County, and no two seasons are quite the same.</p>
         </div>
-        <div class="callout">Jarred at the farm from our own hives — while the harvest lasts.</div>
+        <div class="callout">Bottled at the farm from our own hives.</div>
       </div>
       <div class="duo">
         <figure class="figure">
@@ -526,13 +530,7 @@
         <h2>Four kinds of eggs, one farm stand.</h2>
         <div class="prose" style="margin-top:1.2rem">
           <p>Most stands stop at chicken eggs. Ours is where bakers come for rich duck eggs, and the curious come to try a turkey egg or crack a single goose egg into the pan for breakfast.</p>
-          <p><strong>All four are available now</strong> — gathered from birds that spend their days scratching, foraging, and dabbling around the farm.</p>
-        </div>
-        <div class="egg-row">
-          <span class="egg-chip"><span class="dot" style="background:#B5793D"></span>Chicken</span>
-          <span class="egg-chip"><span class="dot" style="background:#DCE7DA"></span>Duck</span>
-          <span class="egg-chip"><span class="dot" style="background:#E8D9BC"></span>Turkey</span>
-          <span class="egg-chip"><span class="dot" style="background:#F4F1E6; border:1px solid #C9BD9C"></span>Goose</span>
+          <p><strong>Chicken eggs always available. Duck, goose and turkey eggs are seasonal.</strong> All of them gathered from birds that spend their days scratching, foraging, and dabbling around the farm.</p>
         </div>
       </div>
     </div>
@@ -543,9 +541,9 @@
     <div class="wrap split">
       <div>
         <p class="eyebrow">Pasture to freezer</p>
-        <h2>Freezer meats in stock: beef, turkey, chicken, and rabbit.</h2>
+        <h2>Freezer meats in stock: beef, turkey, and chicken.</h2>
         <div class="prose" style="margin-top:1.2rem">
-          <p>Our freezer meats — beef, turkey, chicken, and rabbit — are raised right here, not trucked in. Duck, goose, and guinea fowl come in smaller numbers, so we sell those by preorder to make sure every bird finds its table.</p>
+          <p>Our freezer meats — beef, turkey, and chicken — are raised right here, not trucked in. Duck and goose come in smaller numbers, so we sell those by preorder to make sure every bird finds its table.</p>
           <p>Tell us what you're planning and we'll set it aside. A quick call is all it takes to reserve.</p>
         </div>
         <div class="hero-ctas">
@@ -570,7 +568,7 @@
         <p class="eyebrow">Start your own flock</p>
         <h2>Live poultry, straight from our barn.</h2>
         <div class="prose" style="margin-top:1.2rem">
-          <p>We sell live chickens, turkeys, ducks, geese, and other poultry — healthy birds raised on straw and fresh air, in more breeds and colors than you'll find at a feed store. Whether you want three laying hens for the backyard or a breeding trio of geese, come pick your birds in person.</p>
+          <p>We sell live chickens, turkeys, ducks, and geese — healthy birds raised on straw and fresh air, in more breeds and colors than you'll find at a feed store. Whether you want three laying hens for the backyard or a breeding trio of geese, come pick your birds in person.</p>
           <p>Every bird here is raised by <strong>Joe and Margie Kill</strong> — a family farm in the truest sense, and it shows in the animals.</p>
         </div>
         <div class="callout">Not sure what breed fits your setup? Ask — we keep most of them ourselves.</div>
@@ -585,12 +583,12 @@
         <p class="eyebrow">Thanksgiving &amp; Christmas</p>
         <h2>Holiday birds sell out weeks in advance. Order early.</h2>
         <div class="prose" style="margin-top:1.2rem">
-          <p>Every year, our holiday turkeys, geese, ducks, and guinea fowl are spoken for long before the holidays arrive. We start accepting Thanksgiving and Christmas orders <strong>as early as July</strong> — and we always sell out.</p>
+          <p>Every year, our holiday turkeys, geese, and ducks are spoken for long before the holidays arrive. We start accepting Thanksgiving and Christmas orders <strong>as early as July</strong> — and we always sell out.</p>
         </div>
         <div class="timeline">
           <div class="tl"><b>July</b><span>Holiday order book opens — best selection of birds and sizes.</span></div>
-          <div class="tl"><b>Fall</b><span>Orders fill fast; we typically sell out weeks before the holidays.</span></div>
-          <div class="tl"><b>Pickup</b><span>Collect your fresh bird at the farm, ready for the table.</span></div>
+          <div class="tl"><b>Mid-October</b><span>Orders fill fast; we typically sell out weeks before the holidays. But feel free to call us for any availability.</span></div>
+          <div class="tl"><b>Pickup</b><span>Collect your fresh bird at the farm. They are typically ready for pickup Monday before Thanksgiving and Christmas.</span></div>
         </div>
         <div class="hero-ctas">
           <a class="btn btn-solid" href="tel:+14199171706">Place a holiday order</a>
@@ -610,11 +608,17 @@
       <h2>Order from anywhere. Pick up at the farm.</h2>
       <p class="section-intro">We take orders from anywhere, but everything is <strong>local pickup only</strong> — no shipping. Prices follow the market, so call for today's prices. We accept all major credit cards, plus the apps you already use.</p>
       <div class="pay-row">
-        <span class="pay">💳 Credit cards</span>
-        <span class="pay">PayPal</span>
-        <span class="pay">Venmo</span>
-        <span class="pay">Zelle</span>
-        <span class="pay">CashApp</span>
+        <span class="pay">
+          <span class="cards">
+            <img src="img/pay/visa.svg" alt="Visa" loading="lazy">
+            <img src="img/pay/mastercard.svg" alt="Mastercard" loading="lazy">
+          </span>
+          Credit cards
+        </span>
+        <span class="pay mark"><img src="img/pay/paypal.svg" alt="PayPal" loading="lazy"></span>
+        <span class="pay mark"><img src="img/pay/venmo.svg" alt="Venmo" loading="lazy"></span>
+        <span class="pay mark"><img src="img/pay/zelle.svg" alt="Zelle" loading="lazy"></span>
+        <span class="pay"><img src="img/pay/cashapp.svg" alt="" aria-hidden="true" loading="lazy"> Cash App</span>
       </div>
     </div>
   </section>
