@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://airoxlab.github.io/Loco-Acres-Farm/sitemap.xml
+Sitemap: https://locoacresfarm.com/sitemap.xml

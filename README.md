@@ -10,6 +10,8 @@ birds by preorder.
 - **Hours:** Open daily, 10 am – 5 pm
 - **Ordering:** Local pickup only, no shipping. Market pricing — call for today's prices.
 
+**Live at:** https://locoacresfarm.com
+
 ## Pages
 
 Each page targets its own local search intent, with its own title, meta description, H1 and FAQs.
@@ -45,6 +47,10 @@ Each page targets its own local search intent, with its own title, meta descript
 - `art.png` / `art-web.jpg` — the farm scene artwork
 - `flock.webp` — real photo of the farm's young flock
 - `img/pay/` — payment method logos
+- `favicon.ico`, `favicon-32.png`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` —
+  favicon set cropped from the farm's own barn-and-sunrise emblem
+- `site.webmanifest` — PWA manifest (name, theme color, icons)
+- `CNAME` — custom domain (locoacresfarm.com), kept in the repo so a push cannot drop it
 
 No build step, no framework, no JavaScript. Open `index.html` in a browser or deploy the folder
 as-is to any static host.
