@@ -287,6 +287,14 @@
   .holiday p { color: var(--on-dark); }
   .holiday .prose p { opacity: 0.88; }
   .holiday .figure { border-color: transparent; }
+  .timeline { margin-top: 1.4rem; display: grid; gap: 0.7rem; }
+  .tl {
+    display: flex; gap: 0.9rem; align-items: baseline;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 0.8rem; padding: 0.8rem 1.1rem;
+  }
+  .tl b { font-family: var(--display); font-weight: 400; color: var(--amber); flex: none; min-width: 4.5rem; }
+  .tl span { color: var(--ink-soft); font-size: 0.97rem; }
   .holiday .timeline { margin-top: 1.6rem; display: grid; gap: 0.8rem; }
   .holiday .tl {
     display: flex; gap: 0.9rem; align-items: baseline;
