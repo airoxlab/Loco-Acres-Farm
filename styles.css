@@ -439,3 +439,39 @@
   .xcard .go { display: inline-block; margin-top: 0.6rem; color: var(--amber); font-weight: 700; font-size: 0.9rem; }
 
   nav.top a.here { color: var(--amber); font-weight: 800; }
+
+  /* ---------- Holiday order form ---------- */
+  .order-section { background: var(--ground-deep); }
+  .order-form, .of-done, .of-closed { margin-top: 1.8rem; max-width: 46rem; background: var(--card); border: 1px solid var(--line); border-radius: 1rem; padding: clamp(1.2rem, 4vw, 2rem); }
+  .of-group { border: 0; padding: 0; margin: 0 0 1.6rem; min-width: 0; }
+  .of-group legend { font-family: var(--display); font-size: 1.15rem; color: var(--hive); padding: 0; margin-bottom: 0.8rem; }
+  .of-choices { display: grid; gap: 0.7rem; }
+  @media (min-width: 36rem) { .of-choices { grid-template-columns: 1fr 1fr; } }
+  .order-form .of-choice { display: flex; gap: 0.7rem; align-items: flex-start; border: 1.5px solid var(--line); border-radius: 0.8rem; padding: 0.85rem 1rem; cursor: pointer; }
+  .of-choice:has(input:checked) { border-color: var(--amber); background: color-mix(in srgb, var(--amber) 8%, transparent); }
+  .of-choice input { margin-top: 0.3rem; accent-color: var(--amber); }
+  .of-choice b { display: block; color: var(--hive); }
+  .of-choice small { color: var(--ink-soft); font-size: 0.88rem; }
+  .of-bird { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; align-items: end; padding: 0.9rem 0; border-bottom: 1px dashed var(--line); position: relative; }
+  .of-bird label:first-child { grid-column: 1 / -1; }
+  @media (min-width: 40rem) { .of-bird { grid-template-columns: 1.4fr 0.7fr 1fr auto; } .of-bird label:first-child { grid-column: auto; } }
+  .of-remove { background: none; border: 1px solid var(--line); color: var(--ink-soft); border-radius: 0.5rem; width: 2.4rem; height: 2.6rem; font-size: 1.3rem; cursor: pointer; }
+  .of-add { margin-top: 0.8rem; background: none; border: 1.5px dashed var(--amber); color: var(--amber); border-radius: 0.7rem; padding: 0.55rem 1rem; font: inherit; font-weight: 700; cursor: pointer; }
+  .order-form label, .of-closed label { display: grid; gap: 0.3rem; font-weight: 600; font-size: 0.92rem; color: var(--hive); }
+  .order-form input:not([type=radio]):not([type=checkbox]), .order-form select, .order-form textarea, .of-closed input {
+    font: inherit; font-weight: 400; color: var(--ink); background: var(--ground); border: 1px solid var(--line); border-radius: 0.6rem; padding: 0.65rem 0.75rem; width: 100%; min-width: 0; }
+  .order-form :focus-visible, .of-closed :focus-visible { outline: 3px solid var(--amber-bright); outline-offset: 2px; }
+  .of-grid { display: grid; gap: 0.9rem; }
+  @media (min-width: 36rem) { .of-grid { grid-template-columns: 1fr 1fr; } .of-wide { grid-column: 1 / -1; } }
+  .of-opt { font-weight: 400; color: var(--ink-soft); }
+  .of-hint { font-size: 0.88rem; color: var(--ink-soft); margin-top: 0.6rem; }
+  .of-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .of-agree { display: flex !important; grid-template-columns: none; gap: 0.7rem; align-items: flex-start; font-weight: 400 !important; color: var(--ink) !important; background: var(--ground); border-radius: 0.8rem; padding: 0.9rem 1rem; }
+  .of-agree input { margin-top: 0.3rem; width: 1.15rem; height: 1.15rem; accent-color: var(--amber); flex: none; }
+  .of-summary { margin-top: 1.1rem; font-size: 1.05rem; color: var(--hive); }
+  .of-error { color: #B3261E; font-weight: 600; min-height: 1.2em; margin-top: 0.5rem; }
+  .of-submit { margin-top: 0.4rem; border: 0; cursor: pointer; font: inherit; font-weight: 800; }
+  .of-done h3, .of-closed h3 { font-size: 1.35rem; color: var(--hive); }
+  .of-done p, .of-closed p { margin: 0.7rem 0 1.1rem; }
+  .of-done .btn { margin: 0.3rem 0.4rem 0.3rem 0; }
+  .order-note { margin-top: 1rem; }

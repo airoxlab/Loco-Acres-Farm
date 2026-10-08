@@ -66,7 +66,7 @@
         <span class="fact">Preorder only</span>
         <span class="fact">Local pickup only</span>
       </div>
-      <div class="hero-ctas"><a class="btn btn-solid" href="tel:+14199171706">Place a holiday order</a><a class="btn btn-ghost" href="../freezer-meats-millbury-ohio/">See freezer meats</a></div>
+      <div class="hero-ctas"><a class="btn btn-solid" href="#order">Order online</a><a class="btn btn-ghost" href="tel:+14199171706">Or call 419-917-1706</a></div>
     </div>
   </section>
 
@@ -83,6 +83,210 @@
     </div>
   </section>
 
+  <section id="order" class="order-section">
+    <div class="wrap">
+      <p class="eyebrow">Order online</p>
+      <h2>Order your holiday bird</h2>
+      <p class="section-intro">Fill this in, then pay a <strong>$20 deposit per bird</strong> through our secure Square page to hold your order.
+      The rest is paid at pickup, based on your bird's weight.</p>
+
+      <noscript><p class="order-note">The order form needs JavaScript. Call <a href="tel:+14199171706">419-917-1706</a> to order by phone.</p></noscript>
+
+      <form class="order-form" id="order-form" novalidate hidden>
+        <fieldset class="of-group">
+          <legend>1. Which holiday?</legend>
+          <div class="of-choices" id="of-holidays">
+            <label class="of-choice" data-holiday="Thanksgiving"><input type="radio" name="holiday" value="Thanksgiving"><span><b>Thanksgiving</b><small>Order by Nov 20 &middot; pickup from Mon, Nov 23</small></span></label>
+            <label class="of-choice" data-holiday="Christmas"><input type="radio" name="holiday" value="Christmas"><span><b>Christmas</b><small>Order by Dec 18 &middot; pickup Mon, Dec 21</small></span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="of-group">
+          <legend>2. Your birds</legend>
+          <div id="of-birds"></div>
+          <button type="button" class="of-add" id="of-add">+ Add another bird</button>
+          <p class="of-hint">Type the size you'd like in pounds. We can't guarantee an exact size; we'll get as close as we can.</p>
+        </fieldset>
+
+        <fieldset class="of-group">
+          <legend>3. Your details</legend>
+          <div class="of-grid">
+            <label>Name<input name="name" autocomplete="name" required></label>
+            <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
+            <label class="of-wide">Email <span class="of-opt">(optional, for a confirmation)</span><input name="email" type="email" autocomplete="email"></label>
+            <label class="of-wide">Notes <span class="of-opt">(optional)</span><textarea name="notes" rows="3"></textarea></label>
+          </div>
+          <input class="of-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </fieldset>
+
+        <label class="of-agree"><input type="checkbox" name="agree" required>
+          <span>I understand: <b>local pickup only</b> at 1760 Woodville Rd, the <b>exact size can't be guaranteed</b>, orders are <b>filled in the order they're received</b>, and my order is held once the <b>$20 deposit per bird</b> is paid.</span></label>
+
+        <div class="of-summary" id="of-summary"></div>
+        <p class="of-error" id="of-error" role="alert"></p>
+        <button class="btn btn-solid of-submit" type="submit" id="of-submit">Send my order</button>
+      </form>
+
+      <div class="of-done" id="of-done" hidden>
+        <h3 id="of-done-title">Order sent. One more step.</h3>
+        <p id="of-done-text"></p>
+        <a class="btn btn-solid" id="of-pay" href="https://square.link/u/VtQIgAvs" target="_blank" rel="noopener">Pay deposit on Square</a>
+        <a class="btn btn-ghost" id="of-sms" href="#" hidden>Text my order to Joe</a>
+        <p class="of-hint" id="of-qty"></p>
+      </div>
+
+      <div class="of-closed" id="of-closed" hidden>
+        <h3>Holiday orders are closed for this year</h3>
+        <p>Holiday orders open again in October. Leave your number and we'll text you when they do.</p>
+        <form id="wait-form" class="of-grid" novalidate>
+          <label>Name<input name="name" autocomplete="name"></label>
+          <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
+          <label class="of-wide">Interested in <span class="of-opt">(optional)</span><input name="notes" placeholder="e.g. a 20 lb turkey for Thanksgiving"></label>
+          <input class="of-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="of-wide"><button class="btn btn-solid" type="submit">Let me know</button> <span class="of-hint" id="wait-msg"></span></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+<script>
+(function () {
+  // ---- Update these each year ----
+  var HOLIDAY = {
+    Thanksgiving: { closes: '2026-11-20', pickup: 'pickup starts Monday, November 23' },
+    Christmas:    { closes: '2026-12-18', pickup: 'pickup is Monday, December 21' }
+  };
+  var SQUARE = 'https://square.link/u/VtQIgAvs';
+  var JOE_SMS = '+14199171706';
+  var DEPOSIT = 20;
+  var BIRDS = {
+    Turkey: { price: '$5/lb', range: '14–36', min: 14, max: 36 },
+    Goose:  { price: '$9/lb', range: '8–20',  min: 8,  max: 20 },
+    Duck:   { price: '$7/lb', range: '4–12',  min: 4,  max: 12 }
+  };
+
+  var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
+  var open = Object.keys(HOLIDAY).filter(function (h) { return today <= HOLIDAY[h].closes; });
+
+  var form = document.getElementById('order-form');
+  var closed = document.getElementById('of-closed');
+  if (!open.length) { closed.hidden = false; } else { form.hidden = false; }
+
+  // Holiday choices: hide the ones whose deadline has passed.
+  document.querySelectorAll('#of-holidays .of-choice').forEach(function (el) {
+    if (open.indexOf(el.getAttribute('data-holiday')) < 0) el.remove();
+  });
+  var firstRadio = form.querySelector('input[name="holiday"]');
+  if (firstRadio) firstRadio.checked = true;
+
+  // Bird rows
+  var list = document.getElementById('of-birds');
+  function birdRow() {
+    var row = document.createElement('div');
+    row.className = 'of-bird';
+    row.innerHTML =
+      '<label>Bird<select name="bird">' +
+        Object.keys(BIRDS).map(function (b) { return '<option value="' + b + '">' + b + ' (' + BIRDS[b].price + ')</option>'; }).join('') +
+      '</select></label>' +
+      '<label>How many<input name="qty" type="number" min="1" max="20" value="1" inputmode="numeric"></label>' +
+      '<label>Size you\'d like (lb)<input name="size" inputmode="decimal" placeholder="14–36"></label>' +
+      '<button type="button" class="of-remove" aria-label="Remove this bird">&times;</button>';
+    var sel = row.querySelector('select'), size = row.querySelector('[name=size]');
+    sel.addEventListener('change', function () { size.placeholder = BIRDS[sel.value].range; summary(); });
+    row.querySelector('[name=qty]').addEventListener('input', summary);
+    row.querySelector('.of-remove').addEventListener('click', function () { row.remove(); toggleRemove(); summary(); });
+    list.appendChild(row);
+    toggleRemove(); summary();
+  }
+  function toggleRemove() {
+    var rows = list.querySelectorAll('.of-bird');
+    rows.forEach(function (r) { r.querySelector('.of-remove').hidden = rows.length < 2; });
+  }
+  function birds() {
+    return Array.prototype.map.call(list.querySelectorAll('.of-bird'), function (r) {
+      return {
+        bird: r.querySelector('select').value,
+        qty: Math.max(1, Math.min(20, parseInt(r.querySelector('[name=qty]').value, 10) || 1)),
+        size: r.querySelector('[name=size]').value.trim()
+      };
+    });
+  }
+  function count() { return birds().reduce(function (n, b) { return n + b.qty; }, 0); }
+  function summary() {
+    var n = count();
+    document.getElementById('of-summary').innerHTML =
+      'Deposit: <b>$' + (n * DEPOSIT) + '</b> (' + n + ' bird' + (n === 1 ? '' : 's') + ' &times; $' + DEPOSIT + ')';
+  }
+  document.getElementById('of-add').addEventListener('click', birdRow);
+  if (open.length) birdRow();
+
+  function line(b) { return b.qty + ' x ' + b.bird + (b.size ? ', about ' + b.size + ' lb' : ', any size'); }
+
+  function showDone(data, sent) {
+    var n = count();
+    form.hidden = true;
+    var done = document.getElementById('of-done');
+    done.hidden = false;
+    document.getElementById('of-done-title').textContent = sent ? 'Order sent. One more step.' : 'Almost done. Two quick steps.';
+    document.getElementById('of-done-text').innerHTML = (sent
+      ? 'Joe has your ' + data.holiday + ' order. '
+      : 'Our order system is down for a moment, so please <b>text your order to Joe</b> with the button below. ') +
+      'To hold it, pay your <b>$' + (n * DEPOSIT) + ' deposit</b> on our Square page. For ' + data.holiday + ', ' + HOLIDAY[data.holiday].pickup + '.';
+    document.getElementById('of-qty').textContent = n > 1
+      ? 'On the Square page, use the + button to set the quantity to ' + n + ' (one $20 deposit per bird).'
+      : 'Questions? Call 419-917-1706.';
+    var sms = document.getElementById('of-sms');
+    if (!sent) {
+      var body = 'Holiday order (' + data.holiday + '): ' + data.birds.map(line).join('; ') +
+        '. Name: ' + data.name + '. Phone: ' + data.phone + (data.notes ? '. Notes: ' + data.notes : '');
+      sms.href = 'sms:' + JOE_SMS + '?&body=' + encodeURIComponent(body);
+      sms.hidden = false;
+    }
+    done.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = document.getElementById('of-error');
+    err.textContent = '';
+    var f = form.elements;
+    var data = {
+      holiday: (form.querySelector('input[name="holiday"]:checked') || {}).value,
+      birds: birds(),
+      name: f.name.value.trim(), phone: f.phone.value.trim(), email: f.email.value.trim(),
+      notes: f.notes.value.trim(), website: f.website.value
+    };
+    if (!data.holiday) return (err.textContent = 'Please pick Thanksgiving or Christmas.');
+    if (!data.name || !data.phone) return (err.textContent = 'Please add your name and phone number.');
+    if (data.phone.replace(/\D/g, '').length < 10) return (err.textContent = 'Please check your phone number.');
+    if (data.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) return (err.textContent = 'That email address doesn\'t look right.');
+    if (!f.agree.checked) return (err.textContent = 'Please tick the box to confirm the pickup and size terms.');
+
+    var btn = document.getElementById('of-submit');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch('/api/holiday-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.ok, j: j }; }); })
+      .then(function (r) { if (!r.ok) throw new Error((r.j && r.j.error) || 'failed'); showDone(data, true); })
+      .catch(function () { showDone(data, false); })
+      .then(function () { btn.disabled = false; btn.textContent = 'Send my order'; });
+  });
+
+  // Off-season list
+  var wait = document.getElementById('wait-form');
+  wait.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var msg = document.getElementById('wait-msg');
+    var d = { name: wait.elements.name.value.trim(), phone: wait.elements.phone.value.trim(), notes: wait.elements.notes.value.trim(), website: wait.elements.website.value };
+    if (d.phone.replace(/\D/g, '').length < 10) { msg.textContent = 'Please add your phone number.'; return; }
+    fetch('/api/holiday-waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) })
+      .then(function (r) { if (!r.ok) throw 0; msg.textContent = 'Thanks! We\'ll text you when orders open.'; wait.reset(); })
+      .catch(function () {
+        window.location.href = 'sms:' + JOE_SMS + '?&body=' + encodeURIComponent('Please text me when holiday orders open. ' + d.name + ' ' + d.phone + (d.notes ? ' (' + d.notes + ')' : ''));
+      });
+  });
+})();
+</script>
+
   <section style="padding-top:2rem">
     <div class="wrap split">
       <div>
@@ -95,9 +299,9 @@
           <div class="tl"><b>Dec 21</b><span>Christmas pickup at the farm stand.</span></div>
         </div>
         <div class="prose" style="margin-top:1.4rem">
-          <p>To order, call <a href="tel:+14199171706">419-917-1706</a> or <a href="tel:+14193492788">419-349-2788</a> and tell us which bird, which holiday and the size you would like. Our regulars come back every year, and the earlier you call, the better the choice of sizes.</p>
+          <p>Order online with the form above, or call <a href="tel:+14199171706">419-917-1706</a> or <a href="tel:+14193492788">419-349-2788</a> and tell us which bird, which holiday and the size you would like. Our regulars come back every year, and the earlier you call, the better the choice of sizes.</p>
         </div>
-        <div class="hero-ctas"><a class="btn btn-solid" href="tel:+14199171706">Place a holiday order</a></div>
+        <div class="hero-ctas"><a class="btn btn-solid" href="#order">Order online</a></div>
       </div>
       <figure class="figure tall">
         <img class="ph" src="https://images.unsplash.com/photo-1606728035253-49e8a23146de?auto=format&amp;fit=crop&amp;w=1000&amp;q=75" alt="A golden roasted holiday turkey on a serving platter" loading="lazy" width="1000" height="1050">
