@@ -1,6 +1,6 @@
 # Loco Acres Farm
 
-Multi-page website for Loco Acres Farm — Joe & Margie Kill's farm stand in Millbury, Ohio.
+Multi-page website for Loco Acres Farm — Joe & Margie Kill's family farm in Millbury, Ohio.
 Raw local honey; chicken, duck, turkey and goose eggs; freezer meats; live poultry; and holiday
 birds by preorder.
 
