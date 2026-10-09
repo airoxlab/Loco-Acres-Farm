@@ -1,9 +1,0 @@
-{
-  "name": "loco-acres-holiday-orders",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Holiday bird order endpoint for locoacresfarm.com - sends via Resend",
-  "main": "index.js",
-  "scripts": { "start": "node index.js" },
-  "engines": { "node": ">=18" }
-}

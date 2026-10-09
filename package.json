@@ -1,0 +1,9 @@
+{
+  "name": "loco-acres-farm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "locoacresfarm.com - website and holiday order API in one zero-dependency Node server",
+  "main": "server/index.js",
+  "scripts": { "start": "node server/index.js" },
+  "engines": { "node": ">=18" }
+}

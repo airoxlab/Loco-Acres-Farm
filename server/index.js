@@ -1,6 +1,7 @@
-/* Loco Acres Farm — holiday bird order endpoint.
+/* Loco Acres Farm — website and holiday bird order endpoint.
  *
- * Accepts POST /api/holiday-order from the order form on the holiday page and
+ * Serves the static site from the repo root (with a real 404 page and a
+ * www -> apex redirect), and accepts POST /api/holiday-order from the order form on the holiday page and
  * sends two emails through Resend: the order to Joe, and a confirmation to the
  * customer (when they gave an email). Also accepts POST /api/holiday-waitlist
  * for the "let me know when orders open" box shown after the season closes.
@@ -16,8 +17,13 @@
  */
 
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const zlib = require('zlib');
 
 const PORT = process.env.PORT || 3000;
+const SITE_ROOT = path.resolve(__dirname, '..');
+const CANONICAL_HOST = process.env.CANONICAL_HOST || 'locoacresfarm.com';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const HOST_EMAIL = process.env.HOST_EMAIL || 'locoacresfarm@yahoo.com';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Loco Acres Farm <orders@airoxlab.com>';
@@ -152,6 +158,65 @@ async function sendMail(payload) {
   return body;
 }
 
+/* ---------- static site ---------- */
+
+const TYPES = {
+  '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json', '.xml': 'application/xml; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
+  '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon',
+};
+const COMPRESS = new Set(['.html', '.css', '.js', '.json', '.xml', '.txt', '.svg', '.webmanifest']);
+// Never serve these, even though they sit in the repo.
+const PRIVATE = /^\/(server|screenshots|google-product-photos|node_modules)(\/|$)|\/\.|^\/(README\.md|CNAME|package(-lock)?\.json|Dockerfile)$/i;
+
+function serveFile(req, res, file, status) {
+  const ext = path.extname(file).toLowerCase();
+  const headers = {
+    'Content-Type': TYPES[ext] || 'application/octet-stream',
+    'Cache-Control': ext === '.html' ? 'no-cache' : 'public, max-age=604800',
+    'X-Content-Type-Options': 'nosniff',
+  };
+  const gzip = COMPRESS.has(ext) && /\bgzip\b/.test(req.headers['accept-encoding'] || '');
+  if (gzip) { headers['Content-Encoding'] = 'gzip'; headers['Vary'] = 'Accept-Encoding'; }
+  res.writeHead(status, headers);
+  if (req.method === 'HEAD') return res.end();
+  const stream = fs.createReadStream(file);
+  stream.on('error', () => res.end());
+  (gzip ? stream.pipe(zlib.createGzip()) : stream).pipe(res);
+}
+
+function notFound(req, res) {
+  const page = path.join(SITE_ROOT, '404.html');
+  if (fs.existsSync(page)) return serveFile(req, res, page, 404);
+  res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+  res.end('Not found');
+}
+
+function serveStatic(req, res) {
+  let urlPath;
+  try { urlPath = decodeURIComponent(req.url.split('?')[0].split('#')[0]); } catch { return notFound(req, res); }
+  if (urlPath.includes('\0') || PRIVATE.test(urlPath)) return notFound(req, res);
+
+  const file = path.resolve(SITE_ROOT, '.' + urlPath);
+  if (file !== SITE_ROOT && !file.startsWith(SITE_ROOT + path.sep)) return notFound(req, res);
+
+  fs.stat(file, (err, st) => {
+    if (!err && st.isDirectory()) {
+      // /raw-honey-millbury-ohio -> /raw-honey-millbury-ohio/ so relative links resolve
+      if (!urlPath.endsWith('/')) {
+        const q = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+        res.writeHead(301, { Location: urlPath + '/' + q });
+        return res.end();
+      }
+      const index = path.join(file, 'index.html');
+      return fs.stat(index, (e2, st2) => (!e2 && st2.isFile() ? serveFile(req, res, index, 200) : notFound(req, res)));
+    }
+    if (!err && st.isFile()) return serveFile(req, res, file, 200);
+    notFound(req, res);
+  });
+}
+
 /* ---------- server ---------- */
 
 const clean = (v, n = 1000) => String(v == null ? '' : v).trim().slice(0, n);
@@ -169,6 +234,18 @@ function parseOrder(d) {
 }
 
 const server = http.createServer((req, res) => {
+  // One address for Google: www.locoacresfarm.com -> locoacresfarm.com
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').split(':')[0].toLowerCase();
+  if (host === 'www.' + CANONICAL_HOST) {
+    res.writeHead(301, { Location: `https://${CANONICAL_HOST}${req.url}` });
+    return res.end();
+  }
+
+  // Everything that isn't the API is the website.
+  if (!req.url.startsWith('/api/') && (req.method === 'GET' || req.method === 'HEAD')) {
+    return serveStatic(req, res);
+  }
+
   const origin = req.headers.origin;
   const allowed = origin && ALLOWED_ORIGIN.includes(origin) ? origin : null;
 
