@@ -150,8 +150,8 @@
     :root:not([data-theme="light"]) .brand-logo { background: #FBF4E4; border-radius: 0.6rem; padding: 0.3rem 0.55rem; height: 62px; }
   }
   footer.site .flogo { display: block; margin: 0 auto 0.9rem; height: 64px; width: auto; padding: 0.45rem 0.8rem; }
-  nav.top { display: none; gap: 1.35rem; }
-  nav.top a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  nav.top { display: none; gap: 1rem; }
+  nav.top a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
   nav.top a:hover { color: var(--amber); }
   .call-btn {
     display: inline-block;
@@ -165,7 +165,7 @@
     white-space: nowrap;
   }
   .call-btn:hover { background: var(--amber); color: var(--on-accent); }
-  @media (min-width: 880px) { nav.top { display: flex; } }
+  @media (min-width: 1150px) { nav.top { display: flex; } }
 
   /* ---------- Hero ---------- */
   .hero { padding: 3rem 0 3.5rem; }
