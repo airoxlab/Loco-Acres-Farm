@@ -56,7 +56,8 @@ function send(res, status, obj, origin) {
   res.end(JSON.stringify(obj));
 }
 
-const birdLine = b => `${b.qty} × ${b.bird}${b.size ? `, about ${b.size} lb` : ', any size'}`;
+const extras = b => b.giblets && b.neck ? 'giblets and neck' : b.giblets ? 'giblets only, NO neck' : b.neck ? 'neck only, NO giblets' : 'NO giblets, NO neck';
+const birdLine = b => `${b.qty} × ${b.bird}${b.size ? `, about ${b.size} lb` : ', any size'} (${extras(b)})`;
 
 /* ---------- email templates ---------- */
 
@@ -226,6 +227,8 @@ function parseOrder(d) {
     bird: clean(b && b.bird, 20),
     qty: Math.max(1, Math.min(20, parseInt(b && b.qty, 10) || 1)),
     size: clean(b && b.size, 20).replace(/[^\d.\-– ]/g, ''),
+    giblets: !b || b.giblets !== false,
+    neck: !b || b.neck !== false,
   })).filter(b => BIRDS[b.bird]);
   return {
     holiday: clean(d.holiday, 20), name: clean(d.name, 120), phone: clean(d.phone, 40),

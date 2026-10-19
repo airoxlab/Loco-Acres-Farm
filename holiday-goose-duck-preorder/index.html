@@ -110,7 +110,7 @@
             <label>Name<input name="name" autocomplete="name" required></label>
             <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
             <label class="of-wide">Email <span class="of-opt">(optional, for a confirmation)</span><input name="email" type="email" autocomplete="email"></label>
-            <label class="of-wide">Notes <span class="of-opt">(optional)</span><textarea name="notes" rows="3"></textarea></label>
+            <label class="of-wide">Notes or special requests <span class="of-opt">(optional)</span><textarea name="notes" rows="3" placeholder="Anything else we should know about your order"></textarea></label>
           </div>
           <input class="of-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
         </fieldset>
@@ -185,7 +185,10 @@
       '</select></label>' +
       '<label>How many<input name="qty" type="number" min="1" max="20" value="1" inputmode="numeric"></label>' +
       '<label>Size you\'d like (lb)<input name="size" inputmode="decimal" placeholder="14–36"></label>' +
-      '<button type="button" class="of-remove" aria-label="Remove this bird">&times;</button>';
+      '<button type="button" class="of-remove" aria-label="Remove this bird">&times;</button>' +
+      '<div class="of-extras"><span>Include with this bird:</span>' +
+        '<label><input type="checkbox" name="giblets" checked> Giblets</label>' +
+        '<label><input type="checkbox" name="neck" checked> Neck</label></div>';
     var sel = row.querySelector('select'), size = row.querySelector('[name=size]');
     sel.addEventListener('change', function () { size.placeholder = BIRDS[sel.value].range; summary(); });
     row.querySelector('[name=qty]').addEventListener('input', summary);
@@ -202,7 +205,9 @@
       return {
         bird: r.querySelector('select').value,
         qty: Math.max(1, Math.min(20, parseInt(r.querySelector('[name=qty]').value, 10) || 1)),
-        size: r.querySelector('[name=size]').value.trim()
+        size: r.querySelector('[name=size]').value.trim(),
+        giblets: r.querySelector('[name=giblets]').checked,
+        neck: r.querySelector('[name=neck]').checked
       };
     });
   }
@@ -215,7 +220,8 @@
   document.getElementById('of-add').addEventListener('click', birdRow);
   if (open.length) birdRow();
 
-  function line(b) { return b.qty + ' x ' + b.bird + (b.size ? ', about ' + b.size + ' lb' : ', any size'); }
+  function extras(b) { return b.giblets && b.neck ? 'giblets and neck' : b.giblets ? 'giblets only, no neck' : b.neck ? 'neck only, no giblets' : 'no giblets, no neck'; }
+  function line(b) { return b.qty + ' x ' + b.bird + (b.size ? ', about ' + b.size + ' lb' : ', any size') + ' (' + extras(b) + ')'; }
 
   function showDone(data, sent) {
     var n = count();

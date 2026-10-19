@@ -475,3 +475,8 @@
   .of-done p, .of-closed p { margin: 0.7rem 0 1.1rem; }
   .of-done .btn { margin: 0.3rem 0.4rem 0.3rem 0; }
   .order-note { margin-top: 1rem; }
+  .of-extras { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; align-items: center; font-size: 0.92rem; color: var(--ink-soft); }
+  .order-form .of-extras label { display: flex; gap: 0.4rem; align-items: center; font-weight: 600; color: var(--hive); }
+  .of-extras input { width: 1.1rem; height: 1.1rem; accent-color: var(--amber); }
+  .of-extras > span { flex-basis: 100%; }
+  @media (min-width: 40rem) { .of-extras > span { flex-basis: auto; } }
