@@ -10,7 +10,7 @@
  *
  * Environment:
  *   RESEND_API_KEY   required   Resend API key
- *   HOST_EMAIL       optional   where orders go     (default locoacresfarm@yahoo.com)
+ *   HOST_EMAIL       optional   where orders go, comma separated (default Joe's Yahoo + Gmail)
  *   FROM_EMAIL       optional   verified sender     (default Loco Acres Farm <orders@airoxlab.com>)
  *   PORT             optional   listen port         (default 3000)
  *   ALLOWED_ORIGIN   optional   CORS origin allow-list, comma separated
@@ -25,7 +25,8 @@ const PORT = process.env.PORT || 3000;
 const SITE_ROOT = path.resolve(__dirname, '..');
 const CANONICAL_HOST = process.env.CANONICAL_HOST || 'locoacresfarm.com';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const HOST_EMAIL = process.env.HOST_EMAIL || 'locoacresfarm@yahoo.com';
+const HOST_EMAIL = (process.env.HOST_EMAIL || 'locoacresfarm@yahoo.com,jdkill1760@gmail.com')
+  .split(',').map(s => s.trim()).filter(Boolean);
 // Backup copy of every order, in case the host's mailbox filters one out.
 const BACKUP_EMAIL = (process.env.BACKUP_EMAIL || 'info@airoxlab.com').split(',').map(s => s.trim()).filter(Boolean);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Loco Acres Farm <orders@airoxlab.com>';
@@ -300,7 +301,7 @@ const server = http.createServer((req, res) => {
     try {
       if (isWaitlist) {
         if (!data.phone) return send(res, 400, { error: 'Please add a phone number.' }, allowed);
-        await sendMail({ from: FROM_EMAIL, to: [HOST_EMAIL], bcc: BACKUP_EMAIL, subject: `Holiday order list — ${data.name || data.phone}`, html: waitlistEmail(data) });
+        await sendMail({ from: FROM_EMAIL, to: HOST_EMAIL, bcc: BACKUP_EMAIL, subject: `Holiday order list — ${data.name || data.phone}`, html: waitlistEmail(data) });
         return send(res, 200, { ok: true }, allowed);
       }
 
@@ -317,7 +318,7 @@ const server = http.createServer((req, res) => {
       const count = data.birds.reduce((n, b) => n + b.qty, 0);
       await sendMail({
         from: FROM_EMAIL,
-        to: [HOST_EMAIL],
+        to: HOST_EMAIL,
         bcc: BACKUP_EMAIL,
         ...(data.email ? { reply_to: data.email } : {}),
         subject: `${data.holiday} order — ${data.name} — ${data.birds.map(birdLine).join('; ')}`,
