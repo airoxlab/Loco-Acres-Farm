@@ -20,6 +20,7 @@ at it. No separate nginx static config or `/api/` proxy rule is needed.
 |---|---|---|
 | `RESEND_API_KEY` | **yes** | — |
 | `HOST_EMAIL` | no | `locoacresfarm@yahoo.com` |
+| `BACKUP_EMAIL` | no | `info@airoxlab.com` (bcc of every order) |
 | `FROM_EMAIL` | no | `Loco Acres Farm <orders@airoxlab.com>` |
 | `PORT` | no | `3000` |
 | `CANONICAL_HOST` | no | `locoacresfarm.com` |

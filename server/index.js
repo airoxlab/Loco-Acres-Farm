@@ -26,6 +26,8 @@ const SITE_ROOT = path.resolve(__dirname, '..');
 const CANONICAL_HOST = process.env.CANONICAL_HOST || 'locoacresfarm.com';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const HOST_EMAIL = process.env.HOST_EMAIL || 'locoacresfarm@yahoo.com';
+// Backup copy of every order, in case the host's mailbox filters one out.
+const BACKUP_EMAIL = (process.env.BACKUP_EMAIL || 'info@airoxlab.com').split(',').map(s => s.trim()).filter(Boolean);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Loco Acres Farm <orders@airoxlab.com>';
 const ALLOWED_ORIGIN = (process.env.ALLOWED_ORIGIN ||
   'https://locoacresfarm.com,https://www.locoacresfarm.com')
@@ -298,7 +300,7 @@ const server = http.createServer((req, res) => {
     try {
       if (isWaitlist) {
         if (!data.phone) return send(res, 400, { error: 'Please add a phone number.' }, allowed);
-        await sendMail({ from: FROM_EMAIL, to: [HOST_EMAIL], subject: `Holiday order list — ${data.name || data.phone}`, html: waitlistEmail(data) });
+        await sendMail({ from: FROM_EMAIL, to: [HOST_EMAIL], bcc: BACKUP_EMAIL, subject: `Holiday order list — ${data.name || data.phone}`, html: waitlistEmail(data) });
         return send(res, 200, { ok: true }, allowed);
       }
 
@@ -316,6 +318,7 @@ const server = http.createServer((req, res) => {
       await sendMail({
         from: FROM_EMAIL,
         to: [HOST_EMAIL],
+        bcc: BACKUP_EMAIL,
         ...(data.email ? { reply_to: data.email } : {}),
         subject: `${data.holiday} order — ${data.name} — ${data.birds.map(birdLine).join('; ')}`,
         html: hostEmail(data),
