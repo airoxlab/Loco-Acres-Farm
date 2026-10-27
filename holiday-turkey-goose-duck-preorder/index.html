@@ -239,12 +239,12 @@
     document.getElementById('of-done-text').innerHTML = (sent
       ? 'Joe has your ' + data.holiday + ' order. '
       : 'Our order system is down for a moment, so please <b>text your order to Joe</b> with the button below. ') +
-      'To hold it, pay your <b>$' + (n * DEPOSIT) + ' deposit</b> by card or Cash App on our Square page, or with PayPal or Venmo. For ' + data.holiday + ', ' + HOLIDAY[data.holiday].pickup + '.';
+      'To hold it, pay your <b>$' + (n * DEPOSIT) + ' deposit</b> by card or Cash App on our Square page, or with PayPal, Venmo or Zelle. For ' + data.holiday + ', ' + HOLIDAY[data.holiday].pickup + '.';
     document.getElementById('of-paypal').href = PAYPAL + '/' + (n * DEPOSIT) + 'USD';
     document.getElementById('of-venmo').href = 'https://venmo.com/' + VENMO + '?txn=pay&amount=' + (n * DEPOSIT) + '&note=' + encodeURIComponent('Holiday bird deposit - ' + data.name);
     document.getElementById('of-qty').textContent = (n > 1
       ? 'On the Square page, use the + button to set the quantity to ' + n + ' (one $20 deposit per bird). '
-      : '') + 'Paying with PayPal or Venmo? Put your name in the note so Joe can match it to your order.';
+      : '') + 'Prefer Zelle? Send it to locoacresfarm@yahoo.com. Paying with PayPal, Venmo or Zelle? Put your name in the note so Joe can match it to your order.';
     var sms = document.getElementById('of-sms');
     if (!sent) {
       var body = 'Holiday order (' + data.holiday + '): ' + data.birds.map(line).join('; ') +
