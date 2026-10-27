@@ -130,6 +130,8 @@
         <h3 id="of-done-title">Order sent. One more step.</h3>
         <p id="of-done-text"></p>
         <a class="btn btn-solid" id="of-pay" href="https://square.link/u/VtQIgAvs" target="_blank" rel="noopener">Pay deposit on Square</a>
+        <a class="btn btn-ghost" id="of-paypal" href="https://paypal.me/jdkill1760" target="_blank" rel="noopener">Pay with PayPal</a>
+        <a class="btn btn-ghost" id="of-venmo" href="https://venmo.com/u/JD-KILL" target="_blank" rel="noopener">Pay with Venmo</a>
         <a class="btn btn-ghost" id="of-sms" href="#" hidden>Text my order to Joe</a>
         <p class="of-hint" id="of-qty"></p>
       </div>
@@ -155,6 +157,8 @@
     Christmas:    { closes: '2026-12-18', pickup: 'pickup is Monday, December 21' }
   };
   var SQUARE = 'https://square.link/u/VtQIgAvs';
+  var PAYPAL = 'https://paypal.me/jdkill1760';
+  var VENMO = 'JD-KILL';
   var JOE_SMS = '+14199171706';
   var DEPOSIT = 20;
   var BIRDS = {
@@ -235,10 +239,12 @@
     document.getElementById('of-done-text').innerHTML = (sent
       ? 'Joe has your ' + data.holiday + ' order. '
       : 'Our order system is down for a moment, so please <b>text your order to Joe</b> with the button below. ') +
-      'To hold it, pay your <b>$' + (n * DEPOSIT) + ' deposit</b> on our Square page. For ' + data.holiday + ', ' + HOLIDAY[data.holiday].pickup + '.';
-    document.getElementById('of-qty').textContent = n > 1
-      ? 'On the Square page, use the + button to set the quantity to ' + n + ' (one $20 deposit per bird).'
-      : 'Questions? Call 419-917-1706.';
+      'To hold it, pay your <b>$' + (n * DEPOSIT) + ' deposit</b> by card or Cash App on our Square page, or with PayPal or Venmo. For ' + data.holiday + ', ' + HOLIDAY[data.holiday].pickup + '.';
+    document.getElementById('of-paypal').href = PAYPAL + '/' + (n * DEPOSIT) + 'USD';
+    document.getElementById('of-venmo').href = 'https://venmo.com/' + VENMO + '?txn=pay&amount=' + (n * DEPOSIT) + '&note=' + encodeURIComponent('Holiday bird deposit - ' + data.name);
+    document.getElementById('of-qty').textContent = (n > 1
+      ? 'On the Square page, use the + button to set the quantity to ' + n + ' (one $20 deposit per bird). '
+      : '') + 'Paying with PayPal or Venmo? Put your name in the note so Joe can match it to your order.';
     var sms = document.getElementById('of-sms');
     if (!sent) {
       var body = 'Holiday order (' + data.holiday + '): ' + data.birds.map(line).join('; ') +
