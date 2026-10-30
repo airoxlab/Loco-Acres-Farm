@@ -167,6 +167,31 @@
   .call-btn:hover { background: var(--amber); color: var(--on-accent); }
   @media (min-width: 1150px) { nav.top { display: flex; } }
 
+  /* Phone/tablet menu: the button opens the page links under the sticky header. */
+  .menu-btn {
+    display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+    width: 44px; height: 44px; padding: 0 11px; flex: none;
+    background: transparent; border: 1px solid var(--line); border-radius: 0.7rem; cursor: pointer;
+  }
+  .menu-btn span { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  @media (max-width: 1149px) {
+    header.site .call-btn { margin-left: auto; }
+    header.site { gap: 0.6rem; }
+    nav.top.open {
+      display: flex; flex-direction: column; gap: 0;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--ground); border-bottom: 1px solid var(--line);
+      box-shadow: 0 12px 24px rgba(43, 34, 19, 0.12);
+      padding: 0.4rem 0 0.8rem; max-height: calc(100vh - 140px); overflow-y: auto;
+    }
+    nav.top.open a { padding: 0.85rem 1.4rem; font-size: 1.05rem; border-top: 1px solid var(--line); }
+    nav.top.open a:first-child { border-top: 0; }
+  }
+  @media (min-width: 1150px) { .menu-btn { display: none; } }
+
   /* ---------- Hero ---------- */
   .hero { padding: 3rem 0 3.5rem; }
   .hero-grid { display: grid; gap: 2rem; align-items: center; }

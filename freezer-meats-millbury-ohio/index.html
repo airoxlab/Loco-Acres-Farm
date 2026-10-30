@@ -36,7 +36,7 @@
       <a class="brand" href="../" aria-label="Loco Acres Farm home">
         <img class="brand-logo" src="../logo-web.png" alt="Loco Acres Farm" width="180" height="60">
       </a>
-      <nav class="top" aria-label="Main">
+      <nav class="top" id="main-nav" aria-label="Main">
         <a href="../">Home</a>
         <a href="../raw-honey-millbury-ohio/">Raw honey</a>
         <a href="../farm-fresh-eggs-millbury-ohio/">Farm eggs</a>
@@ -47,6 +47,7 @@
         <a href="../farm-stand-hours-directions/">Hours & visit</a>
       </nav>
       <a class="call-btn" href="tel:+14199171706">Call the farm</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu"><span></span><span></span><span></span></button>
     </header>
   </div>
 </div>
@@ -224,5 +225,6 @@
   </div>
 </footer>
 <script defer src="https://loco-acre-farm-expense-tracker.apps.airoxlab.com/t.js"></script>
+<script>(function(){var b=document.querySelector(".menu-btn"),n=document.getElementById("main-nav");if(!b||!n)return;function set(o){n.classList.toggle("open",o);b.setAttribute("aria-expanded",o);b.setAttribute("aria-label",o?"Close menu":"Open menu");}b.addEventListener("click",function(){set(!n.classList.contains("open"));});n.addEventListener("click",function(e){if(e.target.closest("a"))set(false);});document.addEventListener("keydown",function(e){if(e.key==="Escape")set(false);});})();</script>
 </body>
 </html>
