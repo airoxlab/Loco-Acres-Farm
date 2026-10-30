@@ -255,6 +255,12 @@
     done.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // Visit stats (Farm Books): first touch on the order form, and an order that was sent.
+  var started = false;
+  function orderStart() { if (!started) { started = true; window.fbTrack && window.fbTrack('order_start'); } }
+  form.addEventListener('focusin', orderStart);
+  form.addEventListener('change', orderStart);
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var err = document.getElementById('of-error');
@@ -276,7 +282,7 @@
     btn.disabled = true; btn.textContent = 'Sending…';
     fetch('/api/holiday-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok && j.ok, j: j }; }); })
-      .then(function (r) { if (!r.ok) throw new Error((r.j && r.j.error) || 'failed'); showDone(data, true); })
+      .then(function (r) { if (!r.ok) throw new Error((r.j && r.j.error) || 'failed'); window.fbTrack && window.fbTrack('order_submit'); showDone(data, true); })
       .catch(function () { showDone(data, false); })
       .then(function () { btn.disabled = false; btn.textContent = 'Send my order'; });
   });
@@ -407,5 +413,6 @@
     <p style="margin-top:0.9rem; font-size:0.82rem;">Flock, egg and bake-table photos are from Loco Acres. Additional photos via Unsplash.</p>
   </div>
 </footer>
+<script defer src="https://loco-acre-farm-expense-tracker.apps.airoxlab.com/t.js"></script>
 </body>
 </html>

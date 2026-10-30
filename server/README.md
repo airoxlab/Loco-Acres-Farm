@@ -22,6 +22,8 @@ at it. No separate nginx static config or `/api/` proxy rule is needed.
 | `HOST_EMAIL` | no | `locoacresfarm@yahoo.com,jdkill1760@gmail.com` (comma separated) |
 | `BACKUP_EMAIL` | no | `info@airoxlab.com` (bcc of every order) |
 | `FROM_EMAIL` | no | `Loco Acres Farm <orders@airoxlab.com>` |
+| `FARMBOOKS_WEBHOOK_SECRET` | no | — (set it to copy every order into Farm Books; same value as `WEBSITE_WEBHOOK_SECRET` there) |
+| `FARMBOOKS_WEBHOOK_URL` | no | `https://loco-acre-farm-expense-tracker.apps.airoxlab.com/api/webhooks/website-order` |
 | `PORT` | no | `3000` |
 | `CANONICAL_HOST` | no | `locoacresfarm.com` |
 | `ALLOWED_ORIGIN` | no | `https://locoacresfarm.com,https://www.locoacresfarm.com` |

@@ -30,6 +30,10 @@ const HOST_EMAIL = (process.env.HOST_EMAIL || 'locoacresfarm@yahoo.com,jdkill176
 // Backup copy of every order, in case the host's mailbox filters one out.
 const BACKUP_EMAIL = (process.env.BACKUP_EMAIL || 'info@airoxlab.com').split(',').map(s => s.trim()).filter(Boolean);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Loco Acres Farm <orders@airoxlab.com>';
+// Farm Books: each order is also copied into Joe's bookkeeping portal when the secret is set.
+const FARMBOOKS_URL = process.env.FARMBOOKS_WEBHOOK_URL ||
+  'https://loco-acre-farm-expense-tracker.apps.airoxlab.com/api/webhooks/website-order';
+const FARMBOOKS_SECRET = process.env.FARMBOOKS_WEBHOOK_SECRET || '';
 const ALLOWED_ORIGIN = (process.env.ALLOWED_ORIGIN ||
   'https://locoacresfarm.com,https://www.locoacresfarm.com')
   .split(',').map(s => s.trim()).filter(Boolean);
@@ -160,6 +164,22 @@ async function sendMail(payload) {
   const body = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`Resend ${r.status}: ${JSON.stringify(body)}`);
   return body;
+}
+
+// Copy an order into Farm Books. Best effort: the emails already went out, so never fail the order over it.
+async function sendToFarmBooks(data) {
+  if (!FARMBOOKS_SECRET) return;
+  try {
+    const r = await fetch(FARMBOOKS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-webhook-secret': FARMBOOKS_SECRET },
+      body: JSON.stringify(data),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!r.ok) console.error('Farm Books', r.status, await r.text().catch(() => ''));
+  } catch (e) {
+    console.error('Farm Books unreachable:', e.message);
+  }
 }
 
 /* ---------- static site ---------- */
@@ -324,6 +344,8 @@ const server = http.createServer((req, res) => {
         subject: `${data.holiday} order — ${data.name} — ${data.birds.map(birdLine).join('; ')}`,
         html: hostEmail(data),
       });
+
+      await sendToFarmBooks(data);
 
       // Customer confirmation is a courtesy: never fail the order over it.
       if (data.email) {
