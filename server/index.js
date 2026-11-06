@@ -5,6 +5,9 @@
  * sends two emails through Resend: the order to Joe, and a confirmation to the
  * customer (when they gave an email). Also accepts POST /api/holiday-waitlist
  * for the "let me know when orders open" box shown after the season closes.
+ * POST /api/shop-order takes honey, jam and pumpkin roll orders, paid in full:
+ * it emails the order and, when Square is set up, returns a Square checkout
+ * for the exact total of the priced items.
  *
  * No dependencies — Node 18+ only (uses built-in fetch).
  *
@@ -14,6 +17,8 @@
  *   FROM_EMAIL       optional   verified sender     (default Loco Acres Farm <orders@airoxlab.com>)
  *   PORT             optional   listen port         (default 3000)
  *   ALLOWED_ORIGIN   optional   CORS origin allow-list, comma separated
+ *   SQUARE_ACCESS_TOKEN  optional  Joe's Square token; without it shop orders fall back to PayPal/Venmo/Zelle
+ *   SQUARE_LOCATION_ID   optional  Square location (default Joe's)
  */
 
 const http = require('http');
@@ -42,6 +47,21 @@ const PHONE = '419-917-1706';
 const ADDRESS = '1760 Woodville Rd, Millbury, OH 43447';
 const DEPOSIT = 20;
 const BIRDS = { Turkey: '$5/lb', Goose: '$9/lb', Duck: '$7/lb' };
+// Shop prices live here (the order page shows the same list). price: null = "we'll text you the price".
+const SHOP = {
+  'honey-1lb':      { name: 'Raw honey, 1 lb', price: 10 },
+  'honey-2lb':      { name: 'Raw honey, 2 lb', price: 20 },
+  'honey-quart':    { name: 'Raw honey, quart (3 lb, glass)', price: 28, jar: 2 },
+  'honey-halfgal':  { name: 'Raw honey, half gallon (6 lb, glass)', price: 58, jar: 2 },
+  'jam-peach-habanero':      { name: 'Peach habanero jam', price: null },
+  'jam-strawberry-habanero': { name: 'Strawberry habanero jam', price: null },
+  'jam-strawberry':          { name: 'Strawberry jam', price: null },
+  'jam-peach':               { name: 'Peach jam', price: null },
+  'jam-strawberry-jalapeno': { name: 'Strawberry jalapeño jam', price: null },
+  'pumpkin-roll':            { name: "Margie's pumpkin roll", price: null },
+};
+const SQUARE_TOKEN = process.env.SQUARE_ACCESS_TOKEN || '';
+const SQUARE_LOCATION = process.env.SQUARE_LOCATION_ID || 'GVH1SWAAGEE0S';
 const HOLIDAYS = {
   Thanksgiving: 'Pickup starts Monday, November 23',
   Christmas: 'Pickup on Monday, December 21',
@@ -64,6 +84,8 @@ function send(res, status, obj, origin) {
 }
 
 const extras = b => b.giblets && b.neck ? 'giblets and neck' : b.giblets ? 'giblets only, NO neck' : b.neck ? 'neck only, NO giblets' : 'NO giblets, NO neck';
+const money = n => '$' + n.toFixed(2).replace(/\.00$/, '');
+const shopLine = i => `${i.qty} × ${SHOP[i.id].name}${SHOP[i.id].price == null ? ' (price to follow)' : ` — ${money(i.qty * (SHOP[i.id].price + (SHOP[i.id].jar || 0)))}`}`;
 const birdLine = b => `${b.qty} × ${b.bird}${b.size ? `, about ${b.size} lb` : ', any size'} (${extras(b)})`;
 
 /* ---------- email templates ---------- */
@@ -140,6 +162,95 @@ ${row('Where', ADDRESS + ' (local pickup only)')}
 The final price is set by the weight of your bird at pickup, less your deposit.
 </td></tr>`;
   return SHELL(`Your ${d.holiday} order at Loco Acres Farm`, `Pickup: ${HOLIDAYS[d.holiday]}`, inner);
+}
+
+function shopTotals(items) {
+  const priced = items.filter(i => SHOP[i.id].price != null);
+  const total = priced.reduce((n, i) => n + i.qty * (SHOP[i.id].price + (SHOP[i.id].jar || 0)), 0);
+  return { total, unpriced: items.some(i => SHOP[i.id].price == null) };
+}
+
+function shopHostEmail(d, t) {
+  const inner = `${HEADER('New shop order')}
+<tr><td style="padding:26px 28px 6px">
+<p style="margin:0 0 4px;font-size:20px;font-weight:700;color:#4A3216">${esc(d.name)} ordered from the shop</p>
+<p style="margin:0;font-size:14px;color:#6E5F45">${t.total ? `Paying ${money(t.total)} upfront${d.checkout ? ' through Square' : ''}.` : ''}${t.unpriced ? ' Some items need a price: text the customer their total.' : ''}</p>
+</td></tr>
+<tr><td style="padding:18px 28px 26px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+${d.items.map((i, n) => row(n ? '' : 'Order', shopLine(i), true)).join('')}
+${row('Pay now', t.total ? money(t.total) : '')}
+${row('Phone', d.phone)}
+${row('Email', d.email)}
+${row('Notes', d.notes)}
+</table></td></tr>`;
+  return SHELL('New shop order', `${d.name}: ${d.items.map(shopLine).join('; ')}`, inner);
+}
+
+function shopCustomerEmail(d, t) {
+  const inner = `${HEADER('Order received')}
+<tr><td style="padding:26px 28px 6px">
+<p style="margin:0 0 10px;font-size:20px;font-weight:700;color:#4A3216">Thanks, ${esc(d.name.split(' ')[0])}! We have your order.</p>
+<p style="margin:0;font-size:15px;line-height:1.65;color:#33220E">Orders are paid in full before pickup.${t.total ? ` Your total for the priced items is <b>${money(t.total)}</b>.` : ''}${t.unpriced ? " We'll text you the price for the rest." : ''} We'll let you know when it's ready to pick up. Questions? Call <a href="tel:+14199171706" style="color:#A35A10;font-weight:600;text-decoration:none">${esc(PHONE)}</a>.</p>
+</td></tr>
+<tr><td style="padding:18px 28px 26px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+${d.items.map((i, n) => row(n ? '' : 'Your order', shopLine(i), true)).join('')}
+${row('Where', ADDRESS + ' (local pickup only)')}
+</table></td></tr>`;
+  return SHELL('Your order at Loco Acres Farm', 'Honey, jams and pumpkin rolls from Loco Acres Farm', inner);
+}
+
+// A Square checkout for the exact total of the priced items. Returns its URL, or null.
+async function squareCheckout(d) {
+  if (!SQUARE_TOKEN) return null;
+  const cents = n => ({ amount: Math.round(n * 100), currency: 'USD' });
+  const lines = [];
+  for (const i of d.items) {
+    const p = SHOP[i.id];
+    if (p.price == null) continue;
+    lines.push({ name: p.name, quantity: String(i.qty), base_price_money: cents(p.price) });
+    if (p.jar) lines.push({ name: 'Glass jar deposit', quantity: String(i.qty), base_price_money: cents(p.jar) });
+  }
+  if (!lines.length) return null;
+  const digits = d.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+  const body = {
+    idempotency_key: require('crypto').randomUUID(),
+    order: { location_id: SQUARE_LOCATION, line_items: lines },
+    checkout_options: { allow_tipping: false, ask_for_shipping_address: false },
+    payment_note: `Shop order: ${d.name}, ${d.phone}`.slice(0, 500),
+    pre_populated_data: {
+      ...(d.email ? { buyer_email: d.email } : {}),
+      ...(digits.length === 10 ? { buyer_phone_number: '+1' + digits } : {}),
+    },
+  };
+  try {
+    const r = await fetch('https://connect.squareup.com/v2/online-checkout/payment-links', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${SQUARE_TOKEN}`, 'Content-Type': 'application/json', 'Square-Version': '2025-01-23' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(10000),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { console.error('Square checkout', r.status, JSON.stringify(j.errors || j)); return null; }
+    return j.payment_link && j.payment_link.url || null;
+  } catch (e) {
+    console.error('Square unreachable:', e.message);
+    return null;
+  }
+}
+
+function parseShop(d) {
+  const seen = {};
+  for (const i of Array.isArray(d.items) ? d.items.slice(0, 20) : []) {
+    const id = clean(i && i.id, 40);
+    if (!SHOP[id]) continue;
+    seen[id] = Math.min(20, (seen[id] || 0) + Math.max(0, parseInt(i && i.qty, 10) || 0));
+  }
+  return {
+    items: Object.keys(seen).filter(id => seen[id] > 0).map(id => ({ id, qty: seen[id] })),
+    name: clean(d.name, 120), phone: clean(d.phone, 40), email: clean(d.email, 200), notes: clean(d.notes, 2000),
+  };
 }
 
 function waitlistEmail(d) {
@@ -292,7 +403,8 @@ const server = http.createServer((req, res) => {
 
   const isOrder = req.url.startsWith('/api/holiday-order');
   const isWaitlist = req.url.startsWith('/api/holiday-waitlist');
-  if (req.method !== 'POST' || !(isOrder || isWaitlist)) {
+  const isShop = req.url.startsWith('/api/shop-order');
+  if (req.method !== 'POST' || !(isOrder || isWaitlist || isShop)) {
     return send(res, 404, { error: 'Not found' }, allowed);
   }
 
@@ -316,6 +428,34 @@ const server = http.createServer((req, res) => {
     if (!RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not set');
       return send(res, 500, { error: 'Orders are not configured on the server.' }, allowed);
+    }
+
+    if (isShop) {
+      const shop = parseShop(d);
+      if (!shop.items.length) return send(res, 400, { error: 'Please pick at least one item.' }, allowed);
+      if (!shop.name || shop.phone.replace(/\D/g, '').length < 10) return send(res, 400, { error: 'Please add your name and phone number.' }, allowed);
+      if (shop.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(shop.email)) return send(res, 400, { error: 'That email address does not look right.' }, allowed);
+      const t = shopTotals(shop.items);
+      shop.checkout = await squareCheckout(shop);
+      try {
+        await sendMail({
+          from: FROM_EMAIL, to: HOST_EMAIL, bcc: BACKUP_EMAIL,
+          ...(shop.email ? { reply_to: shop.email } : {}),
+          subject: `Shop order — ${shop.name} — ${shop.items.map(shopLine).join('; ')}`.slice(0, 250),
+          html: shopHostEmail(shop, t),
+        });
+      } catch (e) {
+        console.error('shop order send failed:', e.message);
+        return send(res, 502, { error: 'Could not send right now.' }, allowed);
+      }
+      if (shop.email) {
+        try {
+          await sendMail({ from: FROM_EMAIL, to: [shop.email], reply_to: HOST_EMAIL, subject: 'Your order at Loco Acres Farm', html: shopCustomerEmail(shop, t) });
+        } catch (e) {
+          console.error('shop confirmation failed:', e.message);
+        }
+      }
+      return send(res, 200, { ok: true, total: t.total, unpriced: t.unpriced, checkout: shop.checkout }, allowed);
     }
 
     try {
