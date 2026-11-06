@@ -128,7 +128,7 @@ function customerEmail(d) {
   const inner = `${HEADER('Order received')}
 <tr><td style="padding:26px 28px 6px">
 <p style="margin:0 0 10px;font-size:20px;font-weight:700;color:#4A3216">Thanks, ${esc(d.name.split(' ')[0])}! We have your ${esc(d.holiday)} order.</p>
-<p style="margin:0;font-size:15px;line-height:1.65;color:#33220E">Your order is held once your $${count * DEPOSIT} deposit ($${DEPOSIT} per bird) is paid through Square. Orders are filled in the order they are received, and we can't guarantee an exact size. Questions? Call <a href="tel:+14199171706" style="color:#A35A10;font-weight:600;text-decoration:none">${esc(PHONE)}</a>.</p>
+<p style="margin:0;font-size:15px;line-height:1.65;color:#33220E">Your order is held once your $${count * DEPOSIT} deposit ($${DEPOSIT} per bird) is paid through Square. Orders are filled in the order they are received, and we can't guarantee an exact size. Deposits are refundable until ${d.holiday === 'Christmas' ? 'December 14' : 'November 16'}, but not after. Questions? Call <a href="tel:+14199171706" style="color:#A35A10;font-weight:600;text-decoration:none">${esc(PHONE)}</a>.</p>
 </td></tr>
 <tr><td style="padding:18px 28px 4px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
