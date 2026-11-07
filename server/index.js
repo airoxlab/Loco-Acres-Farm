@@ -49,16 +49,18 @@ const DEPOSIT = 20;
 const BIRDS = { Turkey: '$5/lb', Goose: '$9/lb', Duck: '$7/lb' };
 // Shop prices live here (the order page shows the same list). price: null = "we'll text you the price".
 const SHOP = {
-  'honey-1lb':      { name: 'Raw honey, 1 lb', price: 10 },
-  'honey-2lb':      { name: 'Raw honey, 2 lb', price: 20 },
-  'honey-quart':    { name: 'Raw honey, quart (3 lb, glass)', price: 28, jar: 2 },
-  'honey-halfgal':  { name: 'Raw honey, half gallon (6 lb, glass)', price: 58, jar: 2 },
-  'jam-peach-habanero':      { name: 'Peach habanero jam', price: null },
-  'jam-strawberry-habanero': { name: 'Strawberry habanero jam', price: null },
-  'jam-strawberry':          { name: 'Strawberry jam', price: null },
-  'jam-peach':               { name: 'Peach jam', price: null },
-  'jam-strawberry-jalapeno': { name: 'Strawberry jalapeño jam', price: null },
-  'pumpkin-roll':            { name: "Margie's pumpkin roll", price: null },
+  'honey-1lb':       { name: 'Raw honey, 1 lb (squeeze bottle)', price: 10 },
+  'honey-1lb-glass': { name: 'Raw honey, 1 lb (glass)', price: 10, jar: 2, jarName: 'Glass jar' },
+  'honey-2lb':       { name: 'Raw honey, 2 lb (squeeze bottle)', price: 20 },
+  'honey-2lb-glass': { name: 'Raw honey, 2 lb (glass)', price: 20, jar: 2, jarName: 'Glass jar' },
+  'honey-quart':     { name: 'Raw honey, quart (3 lb, glass)', price: 28, jar: 2 },
+  'honey-halfgal':   { name: 'Raw honey, half gallon (6 lb, glass)', price: 58, jar: 2 },
+  'jam-peach-habanero':      { name: 'Peach habanero jam (8 oz)', price: 7 },
+  'jam-strawberry-habanero': { name: 'Strawberry habanero jam (8 oz)', price: 7 },
+  'jam-strawberry':          { name: 'Strawberry jam (8 oz)', price: 7 },
+  'jam-peach':               { name: 'Peach jam (8 oz)', price: 7 },
+  'jam-strawberry-jalapeno': { name: 'Strawberry jalapeño jam (8 oz)', price: 7 },
+  'pumpkin-roll':            { name: "Margie's pumpkin roll (2 lb)", price: 15 },
 };
 const SQUARE_TOKEN = process.env.SQUARE_ACCESS_TOKEN || '';
 const SQUARE_LOCATION = process.env.SQUARE_LOCATION_ID || 'GVH1SWAAGEE0S';
@@ -210,7 +212,7 @@ async function squareCheckout(d) {
     const p = SHOP[i.id];
     if (p.price == null) continue;
     lines.push({ name: p.name, quantity: String(i.qty), base_price_money: cents(p.price) });
-    if (p.jar) lines.push({ name: 'Glass jar deposit', quantity: String(i.qty), base_price_money: cents(p.jar) });
+    if (p.jar) lines.push({ name: p.jarName || 'Glass jar deposit', quantity: String(i.qty), base_price_money: cents(p.jar) });
   }
   if (!lines.length) return null;
   const digits = d.phone.replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
