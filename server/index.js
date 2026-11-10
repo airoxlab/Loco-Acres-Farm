@@ -64,8 +64,6 @@ const SHOP = {
 };
 const SQUARE_TOKEN = process.env.SQUARE_ACCESS_TOKEN || '';
 const SQUARE_LOCATION = process.env.SQUARE_LOCATION_ID || 'GVH1SWAAGEE0S';
-// Set to false when next year's holiday orders open.
-const HOLIDAY_SOLD_OUT = true;
 const HOLIDAYS = {
   Thanksgiving: 'Pickup starts Monday, November 23',
   Christmas: 'Pickup on Monday, December 21',
@@ -410,9 +408,6 @@ const server = http.createServer((req, res) => {
   const isShop = req.url.startsWith('/api/shop-order');
   if (req.method !== 'POST' || !(isOrder || isWaitlist || isShop)) {
     return send(res, 404, { error: 'Not found' }, allowed);
-  }
-  if (isOrder && HOLIDAY_SOLD_OUT) {
-    return send(res, 410, { error: 'Sorry, our holiday birds are sold out for this year. Call 419-917-1706 with any questions.' }, allowed);
   }
 
   let raw = '';
