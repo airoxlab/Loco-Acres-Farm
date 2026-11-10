@@ -76,7 +76,7 @@
         <div class="bcard"><span class="status pre">Preorder</span><h3>Goose &middot; $9/lb</h3><ul><li>About 8 to 20 lb</li><li>Fresh, farm-raised</li></ul></div>
         <div class="bcard"><span class="status pre">Preorder</span><h3>Duck &middot; $7/lb</h3><ul><li>About 4 to 12 lb</li><li>Fresh, farm-raised</li></ul></div>
       </div>
-      <p class="section-intro" style="margin-top:1.2rem">Tell us the size you'd like. We can't guarantee an exact size, and orders are filled in the order they're received. Local pickup only. Want a turkey too? <a href="../holiday-turkey-goose-duck-preorder/">See our Thanksgiving turkeys</a>, or add one to the same order below.</p>
+      <p class="section-intro" style="margin-top:1.2rem">Tell us the size you'd like. We can't guarantee an exact size, and orders are filled in the order they're received. Local pickup only. Turkeys are sold out for 2026, but you can <a href="../holiday-turkey-goose-duck-preorder/#spares">join the turkey spares list</a>, or add one to the same order below.</p>
     </div>
   </section>
 
@@ -161,8 +161,8 @@
   var DEPOSIT = 20;
   var BIRDS = {
     Goose:  { price: '$9/lb', range: '8–20',  min: 8,  max: 20 },
-    Duck:   { price: '$7/lb', range: '4–12',  min: 4,  max: 12 },
-    Turkey: { price: '$5/lb', range: '14–36', min: 14, max: 36 }
+    Duck:   { price: '$7/lb', range: '4–12',  min: 4,  max: 12 }
+    // Turkey: sold out for 2026 (see the spares list on the turkey page).
   };
 
   var today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York' }).format(new Date());
@@ -189,7 +189,7 @@
         Object.keys(BIRDS).map(function (b) { return '<option value="' + b + '">' + b + ' (' + BIRDS[b].price + ')</option>'; }).join('') +
       '</select></label>' +
       '<label>How many<input name="qty" type="number" min="1" max="20" value="1" inputmode="numeric"></label>' +
-      '<label>Size you\'d like (lb)<input name="size" inputmode="decimal" placeholder="14–36"></label>' +
+      '<label>Size you\'d like (lb)<input name="size" inputmode="decimal" placeholder="' + BIRDS[Object.keys(BIRDS)[0]].range + '"></label>' +
       '<button type="button" class="of-remove" aria-label="Remove this bird">&times;</button>' +
       '<div class="of-extras"><span>Include with this bird:</span>' +
         '<label><input type="checkbox" name="giblets" checked> Giblets</label>' +

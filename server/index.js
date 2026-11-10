@@ -5,6 +5,8 @@
  * sends two emails through Resend: the order to Joe, and a confirmation to the
  * customer (when they gave an email). Also accepts POST /api/holiday-waitlist
  * for the "let me know when orders open" box shown after the season closes.
+ * POST /api/turkey-spares puts someone on the turkey spares list (first come,
+ * first served) once turkeys sell out; it emails Joe and copies it to Farm Books.
  * POST /api/shop-order takes honey, jam and pumpkin roll orders, paid in full:
  * it emails the order and, when Square is set up, returns a Square checkout
  * for the exact total of the priced items.
@@ -47,6 +49,8 @@ const PHONE = '419-917-1706';
 const ADDRESS = '1760 Woodville Rd, Millbury, OH 43447';
 const DEPOSIT = 20;
 const BIRDS = { Turkey: '$5/lb', Goose: '$9/lb', Duck: '$7/lb' };
+// Birds that can't be ordered any more this year (the order pages hide them too).
+const SOLD_OUT = ['Turkey'];
 // Shop prices live here (the order page shows the same list). price: null = "we'll text you the price".
 const SHOP = {
   'honey-1lb':       { name: 'Raw honey, 1 lb (squeeze bottle)', price: 10 },
@@ -255,6 +259,22 @@ function parseShop(d) {
   };
 }
 
+function sparesEmail(d) {
+  const inner = `${HEADER('Turkey spares list')}
+<tr><td style="padding:26px 28px 26px">
+<p style="margin:0 0 8px;font-size:18px;font-weight:700;color:#4A3216">${esc(d.name)} joined the turkey spares list</p>
+<p style="margin:0 0 12px;font-size:14px;color:#6E5F45">If a turkey frees up, text the people on the list in the order they signed up.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+${row('Holiday', d.holiday, true)}
+${row('Turkeys', String(d.qty))}
+${row('Size', d.size ? `about ${d.size} lb` : 'any size')}
+${row('Phone', d.phone)}
+${row('Email', d.email)}
+${row('Notes', d.notes)}
+</table></td></tr>`;
+  return SHELL('Turkey spares list', `${d.name} ${d.phone}`, inner);
+}
+
 function waitlistEmail(d) {
   const inner = `${HEADER('Holiday order list')}
 <tr><td style="padding:26px 28px 26px">
@@ -280,10 +300,10 @@ async function sendMail(payload) {
 }
 
 // Copy an order into Farm Books. Best effort: the emails already went out, so never fail the order over it.
-async function sendToFarmBooks(data) {
+async function sendToFarmBooks(data, url = FARMBOOKS_URL) {
   if (!FARMBOOKS_SECRET) return;
   try {
-    const r = await fetch(FARMBOOKS_URL, {
+    const r = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-webhook-secret': FARMBOOKS_SECRET },
       body: JSON.stringify(data),
@@ -406,7 +426,8 @@ const server = http.createServer((req, res) => {
   const isOrder = req.url.startsWith('/api/holiday-order');
   const isWaitlist = req.url.startsWith('/api/holiday-waitlist');
   const isShop = req.url.startsWith('/api/shop-order');
-  if (req.method !== 'POST' || !(isOrder || isWaitlist || isShop)) {
+  const isSpares = req.url.startsWith('/api/turkey-spares');
+  if (req.method !== 'POST' || !(isOrder || isWaitlist || isShop || isSpares)) {
     return send(res, 404, { error: 'Not found' }, allowed);
   }
 
@@ -460,6 +481,27 @@ const server = http.createServer((req, res) => {
       return send(res, 200, { ok: true, total: t.total, unpriced: t.unpriced, checkout: shop.checkout }, allowed);
     }
 
+    if (isSpares) {
+      const sp = {
+        holiday: clean(d.holiday, 20), qty: Math.max(1, Math.min(5, parseInt(d.qty, 10) || 1)),
+        size: clean(d.size, 20).replace(/[^\d.\-– ]/g, ''), name: data.name, phone: data.phone, email: data.email, notes: data.notes,
+      };
+      if (!HOLIDAYS[sp.holiday]) return send(res, 400, { error: 'Please pick Thanksgiving or Christmas.' }, allowed);
+      if (!sp.name || sp.phone.replace(/\D/g, '').length < 10) return send(res, 400, { error: 'Please add your name and phone number.' }, allowed);
+      if (sp.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(sp.email)) return send(res, 400, { error: 'That email address does not look right.' }, allowed);
+      try {
+        await sendMail({
+          from: FROM_EMAIL, to: HOST_EMAIL, bcc: BACKUP_EMAIL, ...(sp.email ? { reply_to: sp.email } : {}),
+          subject: `Turkey spares list — ${sp.name} — ${sp.qty} for ${sp.holiday}`, html: sparesEmail(sp),
+        });
+      } catch (e) {
+        console.error('spares send failed:', e.message);
+        return send(res, 502, { error: 'Could not send right now.' }, allowed);
+      }
+      await sendToFarmBooks({ ...sp, bird: 'turkey' }, FARMBOOKS_URL.replace(/website-order$/, 'spares-list'));
+      return send(res, 200, { ok: true }, allowed);
+    }
+
     try {
       if (isWaitlist) {
         if (!data.phone) return send(res, 400, { error: 'Please add a phone number.' }, allowed);
@@ -473,6 +515,8 @@ const server = http.createServer((req, res) => {
       if (!data.name) missing.push('name');
       if (!data.phone) missing.push('phone');
       if (missing.length) return send(res, 400, { error: 'Missing: ' + missing.join(', ') }, allowed);
+      const gone = data.birds.find(b => SOLD_OUT.includes(b.bird));
+      if (gone) return send(res, 410, { error: `Sorry, we're sold out of ${gone.bird.toLowerCase()}s for this year. Join the spares list on our website, or call 419-917-1706.` }, allowed);
       if (data.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
         return send(res, 400, { error: 'That email address does not look right.' }, allowed);
       }
