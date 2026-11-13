@@ -28,7 +28,7 @@
 </head>
 <body>
 
-<div class="ticker">Chicken, duck, turkey &amp; goose eggs — available now at the farm</div>
+<div class="ticker">Order honey, jams &amp; pumpkin rolls online &middot; Christmas geese &amp; ducks: order by December 18</div>
 
 <div class="site-head">
   <div class="wrap">
@@ -61,8 +61,8 @@
         <h1>Loco Acres Farm — <em>family farm</em> in Millbury, Ohio</h1>
         <p class="lede">Loco Acres Farm is Joe &amp; Margie Kill's family farm on Woodville Road in Millbury, Ohio, minutes from Toledo, Oregon and Perrysburg. Farm fresh eggs, raw unfiltered honey from our own hives, poultry raised here, beef raised locally with family, live chickens for your own flock, and fresh Thanksgiving turkeys by preorder.</p>
         <div class="hero-ctas">
-          <a class="btn btn-solid" href="#stock">See what's in stock</a>
-          <a class="btn btn-ghost" href="holiday-turkey-goose-duck-preorder/">Order a holiday bird</a>
+          <a class="btn btn-solid" href="#quick-order">Order online for pickup</a>
+          <a class="btn btn-ghost" href="holiday-goose-duck-preorder/">Christmas goose or duck</a>
         </div>
         <p class="hero-note">Joe &amp; Margie Kill &middot; 1760 Woodville Rd, Millbury, OH 43447 &middot; <a href="tel:+14199171706">419-917-1706</a> &middot; <a href="tel:+14193492788">419-349-2788</a></p>
       </div>
@@ -72,12 +72,99 @@
     </div>
   </section>
 
+  <!-- ================= QUICK ORDER ================= -->
+  <section id="quick-order" class="order-section qo">
+    <div class="wrap qo-grid">
+      <div>
+        <p class="eyebrow">Order online &middot; pick up at the farm</p>
+        <h2>Order in a minute, pick up at the farm</h2>
+        <p class="section-intro">Tap what you'd like, then check out and pay online. No account needed. We'll let you know when it's ready at 1760 Woodville Rd.</p>
+        <noscript><p class="order-note">Ordering online needs JavaScript. <a href="order-honey-jams-pumpkin-rolls-millbury-ohio/">Open the order page</a> or call <a href="tel:+14199171706">419-917-1706</a>.</p></noscript>
+        <div class="order-form qo-form" id="qo-form" hidden>
+          <div id="qo-items"></div>
+          <p class="of-summary" id="qo-summary"></p>
+          <a class="btn btn-solid of-submit qo-go" id="qo-go" href="order-honey-jams-pumpkin-rolls-millbury-ohio/#order" aria-disabled="true">Check out</a>
+          <p class="of-hint">More honey sizes and jam flavors on the <a href="order-honey-jams-pumpkin-rolls-millbury-ohio/">full order page</a>.</p>
+        </div>
+      </div>
+      <aside class="qo-side">
+        <div class="bcard qo-card">
+          <span class="status pre">Christmas</span>
+          <h3>Fresh goose or duck</h3>
+          <p>Goose $9/lb &middot; duck $7/lb. Order by <b>December 18</b>, pick up <b>December 21</b>. They go fast.</p>
+          <a class="btn btn-solid" href="holiday-goose-duck-preorder/#order">Preorder a goose or duck</a>
+        </div>
+        <div class="bcard qo-card">
+          <span class="status ok">Eggs, meat &amp; pies</span>
+          <h3>Text us what you'd like</h3>
+          <p>Prices follow the market, so text Joe your order and he'll get back to you with today's price and a pickup time.</p>
+          <a class="btn btn-ghost" href="sms:+14199171706?&amp;body=Hi%20Joe%2C%20I'd%20like%20to%20order%3A%20">Text Joe your order</a>
+          <p class="of-hint">Or call <a href="tel:+14199171706">419-917-1706</a>.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+<script>
+(function () {
+  // Popular items only; ids and prices must match SHOP in server/index.js and the order page.
+  var ITEMS = [
+    { id: 'honey-1lb', name: 'Raw honey, 1 lb', note: 'Squeeze bottle', price: 10 },
+    { id: 'honey-2lb', name: 'Raw honey, 2 lb', note: 'Squeeze bottle', price: 20 },
+    { id: 'honey-quart', name: 'Raw honey, quart (3 lb)', note: 'Glass jar, plus $2 deposit', price: 28, jar: 2 },
+    { id: 'jam-peach-habanero', name: 'Peach habanero jam', note: '8 oz jar \u00b7 our #1 seller', price: 7 },
+    { id: 'jam-strawberry', name: 'Strawberry jam', note: '8 oz jar', price: 7 },
+    { id: 'pumpkin-roll', name: "Margie's pumpkin roll", note: '2 lb \u00b7 made to order', price: 15 }
+  ];
+  var box = document.getElementById('qo-form');
+  if (!box) return;
+  box.hidden = false;
+  var list = document.getElementById('qo-items'), go = document.getElementById('qo-go');
+  var qty = {}, tracked = false;
+  function money(n) { return '$' + n; }
+  ITEMS.forEach(function (it) {
+    qty[it.id] = 0;
+    var row = document.createElement('div');
+    row.className = 'shop-item';
+    row.innerHTML = '<div><b>' + it.name + '</b><small>' + it.note + ' &middot; <span class="shop-price">' +
+      money(it.price) + (it.jar ? ' + ' + money(it.jar) : '') + '</span></small></div>' +
+      '<div class="shop-qty"><button type="button" aria-label="One less ' + it.name + '">&minus;</button>' +
+      '<output aria-live="polite">0</output><button type="button" aria-label="One more ' + it.name + '">+</button></div>';
+    var b = row.querySelectorAll('button'), out = row.querySelector('output');
+    function set(n) {
+      qty[it.id] = Math.max(0, Math.min(20, n));
+      out.textContent = qty[it.id];
+      b[0].disabled = qty[it.id] === 0;
+      row.classList.toggle('picked', qty[it.id] > 0);
+      update();
+      if (!tracked) { tracked = true; window.fbTrack && window.fbTrack('home_quick_start'); }
+    }
+    b[0].addEventListener('click', function () { set(qty[it.id] - 1); });
+    b[1].addEventListener('click', function () { set(qty[it.id] + 1); });
+    b[0].disabled = true;
+    list.appendChild(row);
+  });
+  function update() {
+    var p = ITEMS.filter(function (it) { return qty[it.id] > 0; });
+    var t = p.reduce(function (n, it) { return n + qty[it.id] * (it.price + (it.jar || 0)); }, 0);
+    document.getElementById('qo-summary').innerHTML = p.length ? 'Total: <b>' + money(t) + '</b>' : 'Tap + to add something.';
+    go.href = 'order-honey-jams-pumpkin-rolls-millbury-ohio/' + (p.length ? '?cart=' + p.map(function (it) { return it.id + '.' + qty[it.id]; }).join(',') : '') + '#order';
+    go.setAttribute('aria-disabled', p.length ? 'false' : 'true');
+    go.textContent = p.length ? 'Check out \u2192 ' + money(t) : 'Check out';
+  }
+  go.addEventListener('click', function (e) {
+    if (go.getAttribute('aria-disabled') === 'true') { e.preventDefault(); document.getElementById('qo-summary').innerHTML = 'Tap + to add something first.'; return; }
+    window.fbTrack && window.fbTrack('home_quick_checkout');
+  });
+  update();
+})();
+</script>
+
   <!-- ================= STOCK BOARD ================= -->
   <section id="stock" class="board">
     <div class="wrap">
       <p class="eyebrow">What's available</p>
       <h2>What's available right now</h2>
-      <p class="section-intro">Stock changes with the seasons and the flock, and prices follow the market — call for today's availability and pricing. Local pickup only.</p>
+      <p class="section-intro">Stock changes with the seasons and the flock, and prices follow the market — call or text for today's availability and pricing. Honey, jams and pumpkin rolls you can <a href="#quick-order">order online</a>. Local pickup only.</p>
       <div class="board-grid">
         <div class="bcard">
           <span class="status ok">Available now</span>
@@ -256,7 +343,7 @@
           <div class="tl"><b>Dec 18</b><span>Christmas orders close. Pickup December 21.</span></div>
         </div>
         <div class="hero-ctas">
-          <a class="btn btn-solid" href="holiday-turkey-goose-duck-preorder/#order">Order a goose or duck online</a>
+          <a class="btn btn-solid" href="holiday-goose-duck-preorder/#order">Order a goose or duck online</a>
         </div>
       </div>
       <figure class="figure tall">
@@ -264,7 +351,7 @@
         <figcaption>Worth planning ahead for.</figcaption>
       </figure>
     </div>
-      <div class="wrap" style="padding-top:1.4rem"><a class="btn btn-ghost" href="holiday-turkey-goose-duck-preorder/">Thanksgiving turkeys &rarr;</a> <a class="btn btn-ghost" href="holiday-goose-duck-preorder/">Holiday geese &amp; ducks &rarr;</a></div>
+      <div class="wrap" style="padding-top:1.4rem"><a class="btn btn-ghost" href="holiday-turkey-goose-duck-preorder/#spares">Turkey spares list &rarr;</a> <a class="btn btn-ghost" href="holiday-goose-duck-preorder/">Holiday geese &amp; ducks &rarr;</a></div>
   </section>
 
   <!-- ================= REVIEWS ================= -->
@@ -372,5 +459,11 @@
 
 <script defer src="https://loco-acre-farm-expense-tracker.apps.airoxlab.com/t.js"></script>
 <script>(function(){var b=document.querySelector(".menu-btn"),n=document.getElementById("main-nav");if(!b||!n)return;function set(o){n.classList.toggle("open",o);b.setAttribute("aria-expanded",o);b.setAttribute("aria-label",o?"Close menu":"Open menu");}b.addEventListener("click",function(){set(!n.classList.contains("open"));});n.addEventListener("click",function(e){if(e.target.closest("a"))set(false);});document.addEventListener("keydown",function(e){if(e.key==="Escape")set(false);});})();</script>
+<nav class="mbar" aria-label="Quick actions">
+  <a href="#quick-order"><b>Order</b><span>online</span></a>
+  <a href="tel:+14199171706"><b>Call</b><span>419-917-1706</span></a>
+  <a href="sms:+14199171706"><b>Text</b><span>Joe</span></a>
+  <a href="https://www.google.com/maps?cid=16767334532713306374" target="_blank" rel="noopener"><b>Directions</b><span>Millbury</span></a>
+</nav>
 </body>
 </html>

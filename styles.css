@@ -517,3 +517,26 @@
   .shop-qty button:disabled { color: var(--line); cursor: default; }
   .shop-qty output { min-width: 1.6rem; text-align: center; font-weight: 800; color: var(--ink); }
   .shop-item.picked { background: color-mix(in srgb, var(--amber) 7%, transparent); margin: 0 -0.6rem; padding-left: 0.6rem; padding-right: 0.6rem; border-radius: 0.6rem; }
+
+  /* ---------- Home quick order ---------- */
+  .qo-grid { display: grid; gap: 1.6rem; align-items: start; }
+  @media (min-width: 60rem) { .qo-grid { grid-template-columns: 1.4fr 1fr; } }
+  .qo-form { margin-top: 1.2rem; }
+  .qo-go { display: inline-block; margin-top: 0.8rem; text-align: center; }
+  .qo-go[aria-disabled="true"] { opacity: 0.55; }
+  .qo-side { display: grid; gap: 1rem; }
+  .qo-card p { margin: 0.5rem 0 0.9rem; color: var(--ink-soft); }
+  .qo-card .of-hint { margin: 0.6rem 0 0; }
+
+  /* ---------- Mobile order bar ---------- */
+  .mbar { display: none; }
+  @media (max-width: 760px) {
+    .mbar { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      background: var(--hive-deep); padding: 0.35rem 0.35rem calc(0.35rem + env(safe-area-inset-bottom)); gap: 0.3rem; box-shadow: 0 -4px 16px rgba(0,0,0,.18); }
+    .mbar a { display: grid; justify-items: center; padding: 0.45rem 0.2rem; border-radius: 0.6rem; color: var(--on-dark); text-decoration: none; line-height: 1.15; }
+    .mbar a:first-child { background: var(--amber); color: var(--on-accent); }
+    .mbar b { font-size: 0.95rem; }
+    .mbar span { font-size: 0.72rem; opacity: 0.85; }
+    body { padding-bottom: 4.4rem; }
+    html { scroll-padding-bottom: 5rem; }
+  }
