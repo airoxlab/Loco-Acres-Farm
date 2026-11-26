@@ -471,6 +471,15 @@ const server = http.createServer((req, res) => {
         console.error('shop order send failed:', e.message);
         return send(res, 502, { error: 'Could not send right now.' }, allowed);
       }
+      // Copy it into Farm Books so it shows up with Joe's orders (the card payment then lands on it).
+      await sendToFarmBooks({
+        items: shop.items.map(i => ({
+          name: SHOP[i.id].name,
+          qty: i.qty,
+          price_cents: SHOP[i.id].price == null ? null : Math.round((SHOP[i.id].price + (SHOP[i.id].jar || 0)) * 100),
+        })),
+        name: shop.name, phone: shop.phone, email: shop.email, notes: shop.notes,
+      });
       if (shop.email) {
         try {
           await sendMail({ from: FROM_EMAIL, to: [shop.email], reply_to: HOST_EMAIL, subject: 'Your order at Loco Acres Farm', html: shopCustomerEmail(shop, t) });
